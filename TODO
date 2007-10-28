@@ -1,0 +1,6 @@
+* create a new group for updnotifierd's dbus interface. currently, we
+  allow the "users" group to execute methods of
+  org.frugalware.UpdNotifier. but this should be changed to some other
+  group as suggested by crazy
+
+  last updated: 2007 10 19 1:25 
