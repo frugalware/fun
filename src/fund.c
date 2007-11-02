@@ -58,7 +58,7 @@ void updnotifierd_init(UpdNotifier *server) {
 		return;
 	}
 	
-	dbus_g_object_type_install_info(updnotifierd_get_type(), &dbus_glib_updnotifierd_object_info);
+	dbus_g_object_type_install_info(updnotifierd_get_type(), &dbus_glib_fund_object_info);
 	
 	// Register DBUS path
 	dbus_g_connection_register_g_object(server->connection, "/org/frugalware/UpdNotifier", G_OBJECT(server));
