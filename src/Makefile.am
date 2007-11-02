@@ -3,10 +3,10 @@ INCLUDES =	@UPDNOTIFIERD_CFLAGS@ \
 			-DPREFIX=\"$(prefix)\" \
 			-fPIC
 
-sbin_PROGRAMS = updnotifierd
+sbin_PROGRAMS = fund
 bin_PROGRAMS = fun
 
-updnotifierd_SOURCES = updnotifierd.c
+fund_SOURCES = fund.c
 fun_SOURCES	= eggtrayicon.c	\
 			  sexy-tooltip.c \
 			  fun-tooltip.c \
@@ -14,15 +14,15 @@ fun_SOURCES	= eggtrayicon.c	\
 			  fun-dbus.c \
 			  fun.c
 
-updnotifierd_LDADD= @UPDNOTIFIERD_LIBS@ -lpacman -lfwutil
+fund_LDADD= @UPDNOTIFIERD_LIBS@ -lpacman -lfwutil
 fun_LDADD= @FUN_LIBS@ @UPDNOTIFIERD_LIBS@
 
-BUILT_SOURCES = updnotifierd-dbus-glue.h
+BUILT_SOURCES = fund-dbus-glue.h
 
-updnotifierd-dbus-glue.h: updnotifierd.xml
-	@DBUSBINDINGTOOL@ --mode=glib-server --prefix=updnotifierd \
-		$(srcdir)/updnotifierd.xml > updnotifierd-dbus-glue.h
+fund-dbus-glue.h: fund.xml
+	@DBUSBINDINGTOOL@ --mode=glib-server --prefix=fund \
+		$(srcdir)/fund.xml > fund-dbus-glue.h
 
-EXTRA_DIST = updnotifierd.xml
+EXTRA_DIST = fund.xml
 DISTCLEANFILES = \
-	updnotifierd-dbus-glue.h
+	fund-dbus-glue.h
