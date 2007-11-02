@@ -20,8 +20,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _UPDNOTIFIERD_H
-#define _UPDNOTIFIERD_H
+#ifndef _FUND_H
+#define _FUND_H
 
 typedef struct
 {

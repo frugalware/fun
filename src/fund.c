@@ -32,8 +32,8 @@
 #include <config.h>
 #include <syslog.h>
 #include <pacman.h>
-#include "updnotifierd.h"
-#include "updnotifierd-dbus-glue.h"
+#include "fund.h"
+#include "fund-dbus-glue.h"
 
 typedef void* netbuf;
 static PM_DB *sync_db = NULL;
