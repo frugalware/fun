@@ -11,6 +11,6 @@
 
 gboolean fun_dbus_init (void);
 
-gboolean fun_dbus_perform_service (guint);
+gboolean fun_dbus_perform_service (guint, gchar **);
 
 #endif

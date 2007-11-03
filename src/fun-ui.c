@@ -233,7 +233,7 @@ fun_ui_init (void)
 	guint		seconds = 40;
 	
 	fun_systray_create ();
-	if (fun_dbus_perform_service (TEST_SERVICE) == FALSE)
+	if (fun_dbus_perform_service (TEST_SERVICE, NULL) == FALSE)
 	{
 		g_print ("Failed to connect to the fun daemon\n");
 		connected = FALSE;
@@ -255,7 +255,7 @@ fun_timeout_conn (void)
 {
 	if (connected == TRUE)
 		return FALSE;
-	if (fun_dbus_perform_service (TEST_SERVICE) == FALSE)
+	if (fun_dbus_perform_service (TEST_SERVICE, NULL) == FALSE)
 	{
 		connected = FALSE;
 	}
@@ -272,12 +272,16 @@ fun_timeout_conn (void)
 static gboolean
 fun_timeout_func (void)
 {
+	gchar *plist = NULL;
 	/* Don't do anything if we're not connected to the daemon */
 	if (!connected)
 		return TRUE;
 
-	if (fun_dbus_perform_service (PERFORM_UPDATE)==TRUE)
+	if (fun_dbus_perform_service (PERFORM_UPDATE, &plist)==TRUE)
+	{
+		g_print ("\nlist is\n %s", plist);
 		g_print ("Yeaahaaw! success\n");
+	}
 	else
 		g_print ("Damn !\n");
 

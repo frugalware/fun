@@ -40,7 +40,7 @@ fun_dbus_init (void)
 }
 
 gboolean
-fun_dbus_perform_service (guint service)
+fun_dbus_perform_service (guint service, gchar **package_list)
 {
 	DBusMessage	*message = NULL;
 	DBusMessage	*reply = NULL;
@@ -49,7 +49,6 @@ fun_dbus_perform_service (guint service)
 
 	switch (service)
 	{
-		gchar **package_list = NULL;
 		case PERFORM_UPDATE:
 		{
 			dbus_error_init (&error);
@@ -65,13 +64,19 @@ fun_dbus_perform_service (guint service)
 				return FALSE;
 			}
 			if (!dbus_message_get_args (reply, &error,
-						DBUS_TYPE_STRING, &package_list,
+						DBUS_TYPE_STRING, package_list,
 						DBUS_TYPE_INVALID))
 			{
 				fprintf (stderr, "ERROR: %s\n", error.message);
 				dbus_error_free (&error);
 				return FALSE;
 			}
+			/* if there are any updates, display a notification */
+			if (package_list != NULL)
+			{
+				
+			}
+			
 			dbus_message_unref (reply);
 			dbus_message_unref (message);
 			break;
