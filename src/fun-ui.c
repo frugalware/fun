@@ -32,7 +32,7 @@
 static void fun_about_show (void);
 static void fun_about_hide (void);
 
-#define FUN_ICON  		"fun.png"
+#define FUN_ICON  			"fun.png"
 #define FUN_TOOLTIP_ICON 	"fun.png"
 
 EggTrayIcon	*icon = NULL;
@@ -137,7 +137,7 @@ cb_fun_systray_enter_notify (GtkWidget *widget, GdkEventCrossing *event, gpointe
 	rectangle.x = 2500;
 	rectangle.y = 2500;
 	rectangle.width = 100;
-	rectangle.height = 50;
+	rectangle.height = 70;
 	screen = gtk_widget_get_screen (GTK_WIDGET(icon));
 	sexy_tooltip_position_to_rect (SEXY_TOOLTIP(stooltip), &rectangle, screen);
 	gtk_widget_show_all (stooltip);
@@ -152,7 +152,7 @@ cb_fun_systray_enter_notify (GtkWidget *widget, GdkEventCrossing *event, gpointe
 	else
 	{
 		rectangle.x = x-(w/4);
-		rectangle.y = y-120;
+		rectangle.y = y-130;
 	}
 
 	sexy_tooltip_position_to_rect (SEXY_TOOLTIP(stooltip), &rectangle, screen);
@@ -230,7 +230,7 @@ void
 fun_ui_init (void)
 {
 	GError		*error = NULL;
-	guint		seconds = 40;
+	guint		seconds = 15;
 	
 	fun_systray_create ();
 	if (fun_dbus_perform_service (TEST_SERVICE, NULL) == FALSE)
@@ -279,8 +279,12 @@ fun_timeout_func (void)
 
 	if (fun_dbus_perform_service (PERFORM_UPDATE, &plist)==TRUE)
 	{
-		g_print ("\nlist is\n %s", plist);
-		g_print ("Yeaahaaw! success\n");
+		//g_print ("\nlist is\n %s", plist);
+		//g_print ("Yeaahaaw! success\n");
+		fun_tooltip_set_text1 (tooltip, "Updates are available", TRUE);
+		fun_tooltip_set_text2 (tooltip, "Click here to know more..", TRUE);
+		fun_tooltip_show (tooltip);
+		cb_fun_systray_enter_notify (NULL, NULL, NULL);
 	}
 	else
 		g_print ("Damn !\n");

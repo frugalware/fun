@@ -71,11 +71,6 @@ fun_dbus_perform_service (guint service, gchar **package_list)
 				dbus_error_free (&error);
 				return FALSE;
 			}
-			/* if there are any updates, display a notification */
-			if (package_list != NULL)
-			{
-				
-			}
 			
 			dbus_message_unref (reply);
 			dbus_message_unref (message);
