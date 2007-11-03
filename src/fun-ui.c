@@ -43,6 +43,7 @@ GtkWidget	*stooltip;
 static GtkStatusIcon	*fun_icon = NULL;
 static GtkWidget	*fun_about_dlg = NULL;
 static GdkPixbuf	*fun_about_pixbuf = NULL;
+static GtkWidget	*fun_config_dlg = NULL;
 static gboolean		connected = FALSE;
 
 /* credits */
@@ -63,9 +64,13 @@ static const gchar translators[] = "";
 static gboolean fun_timeout_func (void);
 static gboolean fun_timeout_conn (void);
 
+static void fun_config_dialog_show (void);
+
 static gboolean	cb_fun_systray_icon_clicked (GtkWidget *widget, GdkEventButton *event, gpointer data);
 static gboolean cb_fun_systray_enter_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer data);
 static gboolean cb_fun_systray_leave_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer data);
+
+static void cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data);
 
 void
 fun_systray_create (void)
@@ -194,6 +199,12 @@ cb_fun_systray_icon_clicked (GtkWidget *widget, GdkEventButton *event, gpointer 
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 		gtk_widget_show (menu_item);
 
+		/* Preferences */
+		menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_PREFERENCES, NULL);
+		g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (fun_config_dialog_show), NULL);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+		gtk_widget_show (menu_item);
+		
 		/* Quit */
 		menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_QUIT, NULL);
 		g_signal_connect (G_OBJECT (menu_item), "activate", G_CALLBACK (gtk_main_quit), NULL);
@@ -213,6 +224,26 @@ cb_fun_systray_icon_clicked (GtkWidget *widget, GdkEventButton *event, gpointer 
 	}
 }
 
+static void
+cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data)
+{
+	GtkAdjustment 	*adj = NULL;
+	guint			interval = 0;
+	guint			old_interval = 0;
+	
+	adj = gtk_spin_button_get_adjustment (GTK_SPIN_BUTTON(data));
+	interval = gtk_adjustment_get_value (adj);
+	old_interval = fun_config_get_value_int ("update_interval");
+	/* if nothing is changed */
+	if (old_interval == interval)
+		return;
+	fun_config_set_value_int ("update_interval", interval);
+	fun_config_save ();
+	gtk_widget_hide (fun_config_dlg);
+	
+	return;
+}
+
 void
 fun_systray_destroy (void)
 {
@@ -227,6 +258,89 @@ fun_systray_destroy (void)
 	return;
 }
 
+static void
+fun_config_dialog_show (void)
+{
+	if (!GTK_WIDGET_VISIBLE(fun_config_dlg))
+	{
+		gtk_widget_show (fun_config_dlg);
+		gtk_window_present (GTK_WINDOW(fun_config_dlg));
+	}
+	else
+	{
+		gtk_window_present (GTK_WINDOW(fun_config_dlg));
+	}
+	
+	return;
+}
+
+static void
+fun_config_dialog_init (void)
+{
+	GtkWidget *vbox1;
+	GtkWidget *hbox2;
+	GtkWidget *image1;
+	GtkWidget *label2;
+	GtkWidget *hbox1;
+	GtkWidget *label1;
+	GtkObject *spinbutton1_adj;
+	GtkWidget *spinbutton1;
+	GtkWidget *hbuttonbox1;
+	GtkWidget *pref_close;
+	
+	fun_config_dlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_default_size (fun_config_dlg, 350, 150);
+	//gtk_window_set_resizable (fun_config_dlg, FALSE);
+	
+	vbox1 = gtk_vbox_new (FALSE, 5);
+	gtk_widget_show (vbox1);
+	gtk_container_add (GTK_CONTAINER (fun_config_dlg), vbox1);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 6);
+
+	hbox2 = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox2);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox2, FALSE, TRUE, 5);
+
+	image1 = gtk_image_new_from_file ("/usr/share/fun/fun.png");
+	gtk_widget_show (image1);
+	gtk_box_pack_start (GTK_BOX (hbox2), image1, FALSE, TRUE, 0);
+	gtk_misc_set_alignment (GTK_MISC (image1), 0, 0);
+
+	label2 = gtk_label_new ("<b>Configure Frugalware Update Nofitier</b>");
+	gtk_widget_show (label2);
+	gtk_box_pack_start (GTK_BOX (hbox2), label2, TRUE, TRUE, 0);
+	gtk_label_set_use_markup (GTK_LABEL (label2), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (label2), 0.05, 0.5);
+
+	hbox1 = gtk_hbox_new (FALSE, 5);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, TRUE, TRUE, 0);
+
+	label1 = gtk_label_new ("<b>Update Interval (minutes) :</b>");
+	gtk_widget_show (label1);
+	gtk_box_pack_start (GTK_BOX (hbox1), label1, TRUE, TRUE, 0);
+	gtk_label_set_use_markup (GTK_LABEL (label1), TRUE);
+	gtk_misc_set_alignment (GTK_MISC (label1), 0, 0.5);
+
+	spinbutton1_adj = gtk_adjustment_new (1, 1, 60, 1, 10, 10);
+	spinbutton1 = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton1_adj), 1, 0);
+	gtk_widget_show (spinbutton1);
+	gtk_box_pack_start (GTK_BOX (hbox1), spinbutton1, FALSE, TRUE, 0);
+
+	hbuttonbox1 = gtk_hbutton_box_new ();
+	gtk_widget_show (hbuttonbox1);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbuttonbox1, FALSE, TRUE, 0);
+	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox1), GTK_BUTTONBOX_END);
+
+	pref_close = gtk_button_new_from_stock ("gtk-close");
+	gtk_widget_show (pref_close);
+	gtk_container_add (GTK_CONTAINER (hbuttonbox1), pref_close);
+	GTK_WIDGET_SET_FLAGS (pref_close, GTK_CAN_DEFAULT);
+	g_signal_connect (G_OBJECT(pref_close), "clicked", G_CALLBACK(cb_fun_config_dlg_close_clicked), (gpointer)spinbutton1);
+	
+	return;
+}
+
 void
 fun_ui_init (void)
 {
@@ -234,6 +348,8 @@ fun_ui_init (void)
 	gulong		seconds = 0;
 	
 	fun_systray_create ();
+	fun_config_dialog_init ();
+	
 	if (fun_dbus_perform_service (TEST_SERVICE, NULL) == FALSE)
 	{
 		g_print ("Failed to connect to the fun daemon\n");
@@ -243,8 +359,6 @@ fun_ui_init (void)
 		return;
 	}
 	seconds = fun_config_get_value_int ("update_interval") * 60;
-	g_print ("%d\n", seconds);
-
 	connected = TRUE;
 
 	/* register the timeout */
