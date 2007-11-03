@@ -2,7 +2,7 @@
  *  fun-config.c for fun
  *
  *  Copyright (C) 2007 by Priyank Gosalia <priyankmg@gmail.com>
- *  Portions of this code are borrowed fron gimmix
+ *  Portions of this code are borrowed from gimmix
  *  gimmix is Copyright (C) 2006-2007 Priyank Gosalia <priyankmg@gmail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
