@@ -230,7 +230,7 @@ void
 fun_ui_init (void)
 {
 	GError		*error = NULL;
-	guint		seconds = 20;
+	guint		seconds = 40;
 	
 	fun_systray_create ();
 	if (fun_dbus_perform_service (TEST_SERVICE) == FALSE)

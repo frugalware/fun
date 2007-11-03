@@ -1,5 +1,5 @@
 /*
- *  updatenotifierd.c for updatenotifier
+ *  fund.c for fun
  *
  *  Copyright (C) 2007 by Priyank Gosalia <priyankmg@gmail.com>
  *  Portions of this code are borrowed fron netconfigd
