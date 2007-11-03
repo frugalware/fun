@@ -221,9 +221,9 @@ int main (int argc, char *argv[]) {
 	}
 	
 	// Connect to syslog
-	openlog("updnotifierd", LOG_PID, LOG_DAEMON);
+	openlog("fund", LOG_PID, LOG_DAEMON);
 	
-	syslog(LOG_INFO, "Fund v" VERSION " started...");
+	syslog(LOG_INFO, "fund v" VERSION " started...");
 	
 	g_type_init();
 	
