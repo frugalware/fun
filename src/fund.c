@@ -2,7 +2,7 @@
  *  fund.c for fun
  *
  *  Copyright (C) 2007 by Priyank Gosalia <priyankmg@gmail.com>
- *  Portions of this code are borrowed fron netconfigd
+ *  Portions of this code are borrowed from netconfigd
  *  netconfigd is Copyright (C) 2007 Alex Smith <alex@alex-smith.me.uk>
  *
  *  This program is free software; you can redistribute it and/or modify
