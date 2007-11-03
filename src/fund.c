@@ -66,7 +66,7 @@ void fund_init(FWUpdateNotifier *server) {
 	// Register the service name, the constant here are defined in dbus-glib-bindings.h
 	driver_proxy = dbus_g_proxy_new_for_name(server->connection, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
 
-	if (!org_freedesktop_DBus_request_name (driver_proxy, "org.frugalware.UpdNotifier", 0, &request_ret, &error)) {
+	if (!org_freedesktop_DBus_request_name (driver_proxy, "org.frugalware.FWUpdateNotifier", 0, &request_ret, &error)) {
 		g_warning("Unable to register service: %s", error->message);
 		g_error_free(error);
 	}

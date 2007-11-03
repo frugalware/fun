@@ -52,9 +52,9 @@ fun_dbus_perform_service (guint service, gchar **package_list)
 		case PERFORM_UPDATE:
 		{
 			dbus_error_init (&error);
-			message = dbus_message_new_method_call ("org.frugalware.UpdNotifier",
-								"/org/frugalware/UpdNotifier",
-								"org.frugalware.UpdNotifier",
+			message = dbus_message_new_method_call ("org.frugalware.FWUpdateNotifier",
+								"/org/frugalware/FWUpdateNotifier",
+								"org.frugalware.FWUpdateNotifier",
 								"PerformUpdate");
 			reply = dbus_connection_send_with_reply_and_block (fun_conn, message, reply_timeout, &error);
 			if (dbus_error_is_set(&error))
@@ -80,9 +80,9 @@ fun_dbus_perform_service (guint service, gchar **package_list)
 		{
 			guint ret = 0;
 			dbus_error_init (&error);
-			message = dbus_message_new_method_call ("org.frugalware.UpdNotifier",
-								"/org/frugalware/UpdNotifier",
-								"org.frugalware.UpdNotifier",
+			message = dbus_message_new_method_call ("org.frugalware.FWUpdateNotifier",
+								"/org/frugalware/FWUpdateNotifier",
+								"org.frugalware.FWUpdateNotifier",
 								"TestService");
 			reply = dbus_connection_send_with_reply_and_block (fun_conn, message, reply_timeout, &error);
 			if (dbus_error_is_set(&error))
