@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <glib.h>
 #include <gtk/gtk.h>
+#include "fun-config.h"
 
 int
 main (int argc, char **argv)
@@ -29,6 +30,7 @@ main (int argc, char **argv)
 
 	if (fun_dbus_init() == FALSE)
 		return 1;
+	fun_config_init ();
 	fun_ui_init ();
 
 	gtk_main ();

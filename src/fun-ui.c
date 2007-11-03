@@ -21,6 +21,7 @@
  */
 
 #include <gtk/gtk.h>
+#include "fun-config.h"
 #include "fun-tooltip.h"
 #include "fun-dbus.h"
 #include "sexy-tooltip.h"
@@ -230,7 +231,7 @@ void
 fun_ui_init (void)
 {
 	GError		*error = NULL;
-	guint		seconds = 15;
+	gulong		seconds = 0;
 	
 	fun_systray_create ();
 	if (fun_dbus_perform_service (TEST_SERVICE, NULL) == FALSE)
@@ -238,9 +239,11 @@ fun_ui_init (void)
 		g_print ("Failed to connect to the fun daemon\n");
 		connected = FALSE;
 		/* start the connection retry timeout */
-		g_timeout_add_seconds (seconds, (GSourceFunc)fun_timeout_conn, NULL);
+		g_timeout_add_seconds (30, (GSourceFunc)fun_timeout_conn, NULL);
 		return;
 	}
+	seconds = fun_config_get_value_int ("update_interval") * 60;
+	g_print ("%d\n", seconds);
 
 	connected = TRUE;
 
