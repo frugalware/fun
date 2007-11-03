@@ -44,6 +44,7 @@ static GtkStatusIcon	*fun_icon = NULL;
 static GtkWidget	*fun_about_dlg = NULL;
 static GdkPixbuf	*fun_about_pixbuf = NULL;
 static GtkWidget	*fun_config_dlg = NULL;
+static GtkAdjustment *fun_config_upd_int_adj = NULL;
 static gboolean		connected = FALSE;
 
 /* credits */
@@ -235,10 +236,11 @@ cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data)
 	interval = gtk_adjustment_get_value (adj);
 	old_interval = fun_config_get_value_int ("update_interval");
 	/* if nothing is changed */
-	if (old_interval == interval)
-		return;
-	fun_config_set_value_int ("update_interval", interval);
-	fun_config_save ();
+	if (old_interval != interval)
+	{
+		fun_config_set_value_int ("update_interval", interval);
+		fun_config_save ();
+	}
 	gtk_widget_hide (fun_config_dlg);
 	
 	return;
@@ -263,6 +265,7 @@ fun_config_dialog_show (void)
 {
 	if (!GTK_WIDGET_VISIBLE(fun_config_dlg))
 	{
+		gtk_adjustment_set_value (fun_config_upd_int_adj, fun_config_get_value_int("update_interval"));
 		gtk_widget_show (fun_config_dlg);
 		gtk_window_present (GTK_WINDOW(fun_config_dlg));
 	}
@@ -322,8 +325,8 @@ fun_config_dialog_init (void)
 	gtk_label_set_use_markup (GTK_LABEL (label1), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label1), 0, 0.5);
 
-	spinbutton1_adj = gtk_adjustment_new (1, 1, 60, 1, 10, 10);
-	spinbutton1 = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton1_adj), 1, 0);
+	fun_config_upd_int_adj = gtk_adjustment_new (1, 1, 60, 1, 10, 10);
+	spinbutton1 = gtk_spin_button_new (GTK_ADJUSTMENT (fun_config_upd_int_adj), 1, 0);
 	gtk_widget_show (spinbutton1);
 	gtk_box_pack_start (GTK_BOX (hbox1), spinbutton1, FALSE, TRUE, 0);
 
