@@ -7,7 +7,9 @@ sbin_PROGRAMS = fund
 bin_PROGRAMS = fun
 
 fund_SOURCES = fund.c
-fun_SOURCES	= eggtrayicon.c	\
+fun_SOURCES	= wejpconfig.c \
+			  fun-config.c \
+			  eggtrayicon.c	\
 			  sexy-tooltip.c \
 			  fun-tooltip.c \
 			  fun-ui.c \
