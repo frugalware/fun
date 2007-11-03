@@ -1,12 +1,12 @@
-<node name="/org/frugalware/UpdNotifier">
-	<interface name="org.frugalware.UpdNotifier">
-		<annotation name="org.freedesktop.DBus.GLib.CSymbol" value="updnotifier"/>
+<node name="/org/frugalware/FWUpdateNotifier">
+	<interface name="org.frugalware.FWUpdateNotifier">
+		<annotation name="org.freedesktop.DBus.GLib.CSymbol" value="fund"/>
 		<method name="PerformUpdate">
-			<annotation name="org.freedesktop.DBus.GLib.CSymbol" value="updnotifier_update_database"/>
+			<annotation name="org.freedesktop.DBus.GLib.CSymbol" value="fund_update_database"/>
 			<arg type="s" name="packages" direction="out" />
 		</method>
 		<method name="TestService">
-			<annotation name="org.freedesktop.DBus.GLib.CSymbol" value="updnotifier_test_service"/>
+			<annotation name="org.freedesktop.DBus.GLib.CSymbol" value="fund_test_service"/>
 			<arg type="i" name="ret" direction="out" />
 		</method>
 	</interface>

@@ -5,17 +5,17 @@ typedef struct
 {
 	GObject parent;
 	DBusGConnection *connection;
-} UpdNotifier;
+} FWUpdateNotifier;
 
 typedef struct
 {
 	GObjectClass parent_class;
-} UpdNotifierClass;
+} FWUpdateNotifierClass;
 
-static void updnotifierd_init(UpdNotifier *server);
-static void updnotifierd_class_init(UpdNotifierClass *class);
+static void fund_init(FWUpdateNotifier *server);
+static void fund_class_init(FWUpdateNotifierClass *class);
 
-gboolean updnotifier_update_database(UpdNotifier *obj, gchar **packages, GError **error);
-gboolean updnotifier_test_service(UpdNotifier *obj, gint *ret, GError **error);
+gboolean fund_update_database(FWUpdateNotifier *obj, gchar **packages, GError **error);
+gboolean fund_test_service(FWUpdateNotifier *obj, gint *ret, GError **error);
 
 #endif

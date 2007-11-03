@@ -39,13 +39,13 @@ typedef void* netbuf;
 static PM_DB *sync_db = NULL;
 static PM_DB *local_db = NULL;
 
-G_DEFINE_TYPE(UpdNotifier, updnotifierd, G_TYPE_OBJECT);
+G_DEFINE_TYPE(FWUpdateNotifier, fund, G_TYPE_OBJECT);
 
-void updnotifierd_class_init(UpdNotifierClass *class) {
+void fund_class_init(FWUpdateNotifierClass *class) {
 	// Nothing here
 }
 
-void updnotifierd_init(UpdNotifier *server) {
+void fund_init(FWUpdateNotifier *server) {
 	GError *error = NULL;
 	DBusGProxy *driver_proxy;
 	int request_ret;
@@ -58,10 +58,10 @@ void updnotifierd_init(UpdNotifier *server) {
 		return;
 	}
 	
-	dbus_g_object_type_install_info(updnotifierd_get_type(), &dbus_glib_fund_object_info);
+	dbus_g_object_type_install_info(fund_get_type(), &dbus_glib_fund_object_info);
 	
 	// Register DBUS path
-	dbus_g_connection_register_g_object(server->connection, "/org/frugalware/UpdNotifier", G_OBJECT(server));
+	dbus_g_connection_register_g_object(server->connection, "/org/frugalware/FWUpdateNotifier", G_OBJECT(server));
 
 	// Register the service name, the constant here are defined in dbus-glib-bindings.h
 	driver_proxy = dbus_g_proxy_new_for_name(server->connection, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS, DBUS_INTERFACE_DBUS);
@@ -150,7 +150,7 @@ GList* _updnotifierd_update_database (void) {
 	return ret;
 }
 
-gboolean updnotifier_update_database(UpdNotifier *obj, gchar **packages, GError **error) {
+gboolean fund_update_database(FWUpdateNotifier *obj, gchar **packages, GError **error) {
 	GList *list = NULL;
 	if ((list = _updnotifierd_update_database())==NULL) {
 		*packages = NULL;
@@ -167,7 +167,7 @@ gboolean updnotifier_update_database(UpdNotifier *obj, gchar **packages, GError 
 	}
 }
 
-gboolean updnotifier_test_service(UpdNotifier *obj, gint *ret, GError **error) {
+gboolean fund_test_service(FWUpdateNotifier *obj, gint *ret, GError **error) {
 	*ret = 1;
 	return TRUE;	
 }
@@ -180,7 +180,7 @@ void usage() {
 
 int main (int argc, char *argv[]) {
 	GMainLoop *main_loop;
-	UpdNotifier *server;
+	FWUpdateNotifier *server;
 	int i = 1;
 	int daemonize = 0;
 	
@@ -227,7 +227,7 @@ int main (int argc, char *argv[]) {
 	
 	g_type_init();
 	
-	server = g_object_new(updnotifierd_get_type(), NULL);
+	server = g_object_new(fund_get_type(), NULL);
 
 	_updatenotifierd_init_pacman ();
 	main_loop = g_main_loop_new(NULL, FALSE);
