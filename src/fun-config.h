@@ -20,6 +20,9 @@ char * fun_config_get_value_string (const char *);
 /* Read a value from funrc and return it as an int */
 int fun_config_get_value_int (const char *);
 
+/* Set a value for a particular key in funrc */
+void fun_config_set_value_int (const char *, int);
+
 /* Free conf */
 void fun_config_free (void);
 
