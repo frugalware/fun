@@ -447,7 +447,7 @@ fun_about_show (void)
 
 		if (!fun_about_pixbuf)
 			fun_about_pixbuf = gdk_pixbuf_new_from_file ("/usr/share/fun/fun.png", NULL);
-		ver = g_strdup_printf ("v%s", VERSION);
+		ver = g_strdup_printf ("%s", VERSION);
 		fun_about_dlg = gtk_about_dialog_new ();
 		gtk_about_dialog_set_name (GTK_ABOUT_DIALOG(fun_about_dlg), PACKAGE);
 		gtk_about_dialog_set_version (GTK_ABOUT_DIALOG(fun_about_dlg), ver);
