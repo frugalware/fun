@@ -22,6 +22,7 @@
 
 #include <gtk/gtk.h>
 #include "fun-config.h"
+#include "fun-messages.h"
 #include "fun-tooltip.h"
 #include "fun-dbus.h"
 #include "sexy-tooltip.h"
@@ -41,11 +42,11 @@ FunTooltip	*tooltip = NULL;
 GtkWidget	*stooltip;
 
 static GtkStatusIcon	*fun_icon = NULL;
-static GtkWidget	*fun_about_dlg = NULL;
-static GdkPixbuf	*fun_about_pixbuf = NULL;
-static GtkWidget	*fun_config_dlg = NULL;
-static GtkAdjustment *fun_config_upd_int_adj = NULL;
-static gboolean		connected = FALSE;
+static GtkWidget		*fun_about_dlg = NULL;
+static GdkPixbuf		*fun_about_pixbuf = NULL;
+static GtkWidget		*fun_config_dlg = NULL;
+static GtkAdjustment 	*fun_config_upd_int_adj = NULL;
+static gboolean			connected = FALSE;
 
 /* credits */
 static const gchar *authors[] = { \
@@ -66,6 +67,7 @@ static gboolean fun_timeout_func (void);
 static gboolean fun_timeout_conn (void);
 
 static void fun_config_dialog_show (void);
+static void fun_restart (void);
 
 static gboolean	cb_fun_systray_icon_clicked (GtkWidget *widget, GdkEventButton *event, gpointer data);
 static gboolean cb_fun_systray_enter_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer data);
@@ -235,24 +237,45 @@ cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data)
 	adj = gtk_spin_button_get_adjustment (GTK_SPIN_BUTTON(data));
 	interval = gtk_adjustment_get_value (adj);
 	old_interval = fun_config_get_value_int ("update_interval");
-	/* if nothing is changed */
+	/* if interval is changed, save the new interval value to .funrc and prompt
+	 * the user to restart fun */
+	/* TODO: implement a mechanism that automatically sets the timeout value to the 
+	 * updated interval value without requiring to restart fun */
 	if (old_interval != interval)
 	{
 		fun_config_set_value_int ("update_interval", interval);
 		fun_config_save ();
+		if (fun_question("Restart Fun", "Fun needs to be restarted in order for the changes to take effect. Do you want to restart Fun now ?") == GTK_RESPONSE_YES)
+		{
+			fun_restart ();
+		}
 	}
 	gtk_widget_hide (fun_config_dlg);
 	
 	return;
 }
 
+static void
+fun_restart (void)
+{
+	fun_ui_cleanup ();
+	sleep (1);
+	while (gtk_events_pending()) gtk_main_iteration ();
+	system ("/usr/bin/fun");
+	exit (0);
+
+	return;
+}
+
 void
-fun_systray_destroy (void)
+fun_ui_cleanup (void)
 {
 	if (icon == NULL)
 		return;
 	gtk_widget_destroy (GTK_WIDGET(icon));
+	gtk_widget_destroy (GTK_WIDGET(fun_config_dlg));
 	fun_tooltip_destroy (tooltip);
+	g_print ("i was called\n");
 	
 	icon = NULL;
 	tooltip = NULL;

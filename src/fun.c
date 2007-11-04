@@ -34,6 +34,7 @@ main (int argc, char **argv)
 	fun_ui_init ();
 
 	gtk_main ();
+	fun_ui_cleanup ();
 
 	return 0;
 }
