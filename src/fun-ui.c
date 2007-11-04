@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <gtk/gtk.h>
+#include "fun.h"
 #include "fun-config.h"
 #include "fun-messages.h"
 #include "fun-tooltip.h"
@@ -246,7 +246,8 @@ cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data)
 	{
 		fun_config_set_value_int ("update_interval", interval);
 		fun_config_save ();
-		if (fun_question("Restart Fun", "Fun needs to be restarted in order for the changes to take effect. Do you want to restart Fun now ?") == GTK_RESPONSE_YES)
+		if (fun_question(_("Restart Fun"),
+						_("Fun needs to be restarted in order for the changes to take effect. Do you want to restart Fun now ?")) == GTK_RESPONSE_YES)
 		{
 			fun_restart ();
 		}
@@ -331,7 +332,7 @@ fun_config_dialog_init (void)
 	gtk_box_pack_start (GTK_BOX (hbox2), image1, FALSE, TRUE, 0);
 	gtk_misc_set_alignment (GTK_MISC (image1), 0, 0);
 
-	label2 = gtk_label_new ("<b>Configure Frugalware Update Nofitier</b>");
+	label2 = gtk_label_new (_("<b>Configure Frugalware Update Nofitier</b>"));
 	gtk_widget_show (label2);
 	gtk_box_pack_start (GTK_BOX (hbox2), label2, TRUE, TRUE, 0);
 	gtk_label_set_use_markup (GTK_LABEL (label2), TRUE);
@@ -341,7 +342,7 @@ fun_config_dialog_init (void)
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, TRUE, TRUE, 0);
 
-	label1 = gtk_label_new ("<b>Update Interval (minutes) :</b>");
+	label1 = gtk_label_new (_("<b>Update Interval (minutes) :</b>"));
 	gtk_widget_show (label1);
 	gtk_box_pack_start (GTK_BOX (hbox1), label1, TRUE, TRUE, 0);
 	gtk_label_set_use_markup (GTK_LABEL (label1), TRUE);
@@ -377,8 +378,8 @@ fun_ui_init (void)
 	
 	if (fun_dbus_perform_service (TEST_SERVICE, NULL) == FALSE)
 	{
-		g_print ("Failed to connect to the fun daemon\n");
-		fun_tooltip_set_text2 (tooltip, "Not connected to fun daemon", FALSE);
+		g_print (_("Failed to connect to the fun daemon\n"));
+		fun_tooltip_set_text2 (tooltip, _("Not connected to fun daemon"), FALSE);
 		connected = FALSE;
 		/* start the connection retry timeout */
 		g_timeout_add_seconds (30, (GSourceFunc)fun_timeout_conn, NULL);
@@ -425,8 +426,8 @@ fun_timeout_func (void)
 	{
 		//g_print ("\nlist is\n %s", plist);
 		//g_print ("Yeaahaaw! success\n");
-		fun_tooltip_set_text1 (tooltip, "Updates are available", TRUE);
-		fun_tooltip_set_text2 (tooltip, "Click here to know more..", TRUE);
+		fun_tooltip_set_text1 (tooltip, _("Updates are available"), TRUE);
+		fun_tooltip_set_text2 (tooltip, _("Click here to know more.."), TRUE);
 		fun_tooltip_show (tooltip);
 		cb_fun_systray_enter_notify (NULL, NULL, NULL);
 	}
@@ -446,7 +447,7 @@ fun_about_show (void)
 
 		if (!fun_about_pixbuf)
 			fun_about_pixbuf = gdk_pixbuf_new_from_file ("/usr/share/fun/fun.png", NULL);
-		ver = g_strdup_printf ("%s", PACKAGE_VERSION);
+		ver = g_strdup_printf ("v%s", VERSION);
 		fun_about_dlg = gtk_about_dialog_new ();
 		gtk_about_dialog_set_name (GTK_ABOUT_DIALOG(fun_about_dlg), PACKAGE);
 		gtk_about_dialog_set_version (GTK_ABOUT_DIALOG(fun_about_dlg), ver);
