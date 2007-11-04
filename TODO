@@ -2,5 +2,8 @@
   allow the "users" group to execute methods of
   org.frugalware.UpdNotifier. but this should be changed to some other
   group as suggested by crazy
+* fun: implement a mechanism that automatically sets the timeout value
+  to the updated interval value as specified by the user without
+  requiring to restart fun
 
-  last updated: 2007 10 19 1:25 
+  last updated by Priyank: 2007 11 04 13:11
