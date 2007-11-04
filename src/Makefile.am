@@ -1,4 +1,4 @@
-INCLUDES =	@UPDNOTIFIERD_CFLAGS@ \
+INCLUDES =	@FUND_CFLAGS@ \
 		   	@FUN_CFLAGS@ \
 			-DPREFIX=\"$(prefix)\" \
 			-fPIC
@@ -17,8 +17,8 @@ fun_SOURCES	= wejpconfig.c \
 			  fun-dbus.c \
 			  fun.c
 
-fund_LDADD= @UPDNOTIFIERD_LIBS@ -lpacman -lfwutil
-fun_LDADD= @FUN_LIBS@ @UPDNOTIFIERD_LIBS@
+fund_LDADD= @FUND_LIBS@ -lpacman -lfwutil
+fun_LDADD= @FUN_LIBS@ @FUND_LIBS@
 
 BUILT_SOURCES = fund-dbus-glue.h
 

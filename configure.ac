@@ -20,7 +20,7 @@ fi
 
 AC_SUBST(DBUS_BINDING_TOOL)
 
-PKG_CHECK_MODULES([UPDNOTIFIERD], [dbus-glib-1 >= 0.73])
+PKG_CHECK_MODULES([FUND], [dbus-glib-1 >= 0.73])
 PKG_CHECK_MODULES([FUN], [gtk+-2.0 >= 2.12.0])
 
 AC_ARG_WITH(dbus-sys, [  --with-dbus-sys=<dir>   where D-BUS system.d directory is])
