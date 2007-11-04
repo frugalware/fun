@@ -1,16 +1,24 @@
 ENV_CFLAGS=$CFLAGS
 
 AC_PREREQ(2.59)
-AC_INIT([fun], 0.1, [frugalware-devel@frugalware.org], fun)
-AC_CONFIG_SRCDIR([src/fund.c])
+AC_INIT([fun], 0.1.0, [frugalware-devel@frugalware.org], fun)
+AC_CONFIG_SRCDIR([src/fun.c])
 AC_LANG(C)
 AM_CONFIG_HEADER(config.h)
 AC_CANONICAL_SYSTEM
+AC_PROG_LIBTOOL
+AC_PROG_INTLTOOL([0.21])
 AM_INIT_AUTOMAKE
 
 AC_PROG_CC
 AC_HEADER_STDC
-AC_CHECK_HEADERS([stdlib.h string.h sys/ioctl.h unistd.h pacman.h libfwutil.h])
+AC_CHECK_HEADERS([locale.h stdlib.h string.h sys/ioctl.h unistd.h pacman.h libfwutil.h])
+ALL_LINGUAS=""
+GETTEXT_PACKAGE=fun
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [needed for bindtextdomain() and textdomain()])
+AM_GLIB_GNU_GETTEXT
+AM_GLIB_DEFINE_LOCALEDIR(LOCALEDIR)
 
 AC_PATH_PROG(DBUSBINDINGTOOL, dbus-binding-tool, no)
 
@@ -39,6 +47,7 @@ dnl ==========================================================================
 
 AC_OUTPUT([
 src/Makefile
+po/Makefile.in
 Makefile
 ])
 
