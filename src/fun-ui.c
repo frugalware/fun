@@ -256,18 +256,6 @@ cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data)
 	return;
 }
 
-static void
-fun_restart (void)
-{
-	fun_ui_cleanup ();
-	sleep (1);
-	while (gtk_events_pending()) gtk_main_iteration ();
-	system ("/usr/bin/fun");
-	exit (0);
-
-	return;
-}
-
 void
 fun_ui_cleanup (void)
 {
@@ -279,6 +267,18 @@ fun_ui_cleanup (void)
 	icon = NULL;
 	tooltip = NULL;
 	
+	return;
+}
+
+static void
+fun_restart (void)
+{
+	fun_ui_cleanup ();
+	sleep (1);
+	while (gtk_events_pending()) gtk_main_iteration ();
+	system ("/usr/bin/fun");
+	exit (0);
+
 	return;
 }
 
@@ -314,7 +314,7 @@ fun_config_dialog_init (void)
 	GtkWidget *pref_close;
 	
 	fun_config_dlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_default_size (fun_config_dlg, 350, 150);
+	gtk_window_set_default_size (GTK_WINDOW(fun_config_dlg), 350, 150);
 	//gtk_window_set_resizable (fun_config_dlg, FALSE);
 	
 	vbox1 = gtk_vbox_new (FALSE, 5);
