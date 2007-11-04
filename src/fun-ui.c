@@ -378,6 +378,7 @@ fun_ui_init (void)
 	if (fun_dbus_perform_service (TEST_SERVICE, NULL) == FALSE)
 	{
 		g_print ("Failed to connect to the fun daemon\n");
+		fun_tooltip_set_text2 (tooltip, "Not connected to fun daemon", FALSE);
 		connected = FALSE;
 		/* start the connection retry timeout */
 		g_timeout_add_seconds (30, (GSourceFunc)fun_timeout_conn, NULL);
@@ -405,6 +406,7 @@ fun_timeout_conn (void)
 	{
 		connected = TRUE;
 		g_timeout_add_seconds (20, (GSourceFunc)fun_timeout_func, NULL);
+		fun_tooltip_set_text2 (tooltip, "", FALSE);
 		return FALSE;
 	}
 
