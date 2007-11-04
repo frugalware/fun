@@ -28,8 +28,9 @@
 #include "sexy-tooltip.h"
 #include "eggtrayicon.h"
 
-#define PACKAGE		"fun"
-#define	VERSION		"1.0"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 static void fun_about_show (void);
 static void fun_about_hide (void);
@@ -275,8 +276,6 @@ fun_ui_cleanup (void)
 	gtk_widget_destroy (GTK_WIDGET(icon));
 	gtk_widget_destroy (GTK_WIDGET(fun_config_dlg));
 	fun_tooltip_destroy (tooltip);
-	g_print ("i was called\n");
-	
 	icon = NULL;
 	tooltip = NULL;
 	
@@ -445,7 +444,7 @@ fun_about_show (void)
 
 		if (!fun_about_pixbuf)
 			fun_about_pixbuf = gdk_pixbuf_new_from_file ("/usr/share/fun/fun.png", NULL);
-		ver = g_strdup_printf ("%s", VERSION);
+		ver = g_strdup_printf ("%s", PACKAGE_VERSION);
 		fun_about_dlg = gtk_about_dialog_new ();
 		gtk_about_dialog_set_name (GTK_ABOUT_DIALOG(fun_about_dlg), PACKAGE);
 		gtk_about_dialog_set_version (GTK_ABOUT_DIALOG(fun_about_dlg), ver);
