@@ -12,6 +12,7 @@ fun_SOURCES	= wejpconfig.c \
 			  eggtrayicon.c	\
 			  sexy-tooltip.c \
 			  fun-tooltip.c \
+			  fun-messages.c \
 			  fun-ui.c \
 			  fun-dbus.c \
 			  fun.c
