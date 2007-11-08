@@ -1,4 +1,4 @@
-SUBDIRS = src
+SUBDIRS = src po
 
 dbusdir = $(DBUS_SYS_DIR)
 dbus_DATA = fund.conf
