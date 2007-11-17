@@ -27,9 +27,9 @@ if test "x$DBUSBINDINGTOOL" = "xno"; then
 fi
 
 AC_SUBST(DBUS_BINDING_TOOL)
-
+ui_modules="gtk+-2.0 >= 2.12.0 libglade-2.0 >= 2.6.0"
 PKG_CHECK_MODULES([FUND], [dbus-glib-1 >= 0.73])
-PKG_CHECK_MODULES([FUN], [gtk+-2.0 >= 2.12.0])
+PKG_CHECK_MODULES([FUN], [$ui_modules])
 
 AC_ARG_WITH(dbus-sys, [  --with-dbus-sys=<dir>   where D-BUS system.d directory is])
 
