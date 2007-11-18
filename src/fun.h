@@ -8,6 +8,7 @@
 #include <locale.h>
 #include <libintl.h>
 #include <gtk/gtk.h>
+#include <glade/glade.h>
 
 #define _(string) gettext (string)
 
