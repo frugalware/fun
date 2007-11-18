@@ -47,6 +47,7 @@ dnl ==========================================================================
 
 AC_OUTPUT([
 src/Makefile
+data/Makefile
 po/Makefile.in
 Makefile
 ])
