@@ -68,7 +68,7 @@ main (int argc, char **argv)
 	/* initialize fun user interface */
 	if (!fun_glade_init())
 	{
-		fun_error (_("Errir"), _("Failed to initialize interface"));
+		fun_error (_("Error"), _("Failed to initialize interface"));
 		return -1;
 	}
 	fun_ui_init ();
