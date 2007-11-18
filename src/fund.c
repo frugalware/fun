@@ -167,6 +167,24 @@ gboolean fund_update_database(FWUpdateNotifier *obj, gchar **packages, GError **
 	}
 }
 
+gboolean fund_get_package_version(FWUpdateNotifier *obj, gchar *package, gchar **version, GError **error) {
+	PM_PKG *pkg = NULL;
+	pkg = pacman_db_readpkg (sync_db, (char*)package);
+	if (pkg == NULL)
+		return FALSE;
+	*version = g_strdup ((char*)pacman_pkg_getinfo(pkg,PM_PKG_VERSION));
+	return TRUE;
+}
+
+gboolean fund_get_package_description(FWUpdateNotifier *obj, gchar *package, gchar **description, GError **error) {
+	PM_PKG *pkg = NULL;
+	pkg = pacman_db_readpkg (sync_db, (char*)package);
+	if (pkg == NULL)
+		return FALSE;
+	*description = g_strdup ((char*)pacman_pkg_getinfo(pkg,PM_PKG_DESC));
+	return TRUE;
+}
+
 gboolean fund_test_service(FWUpdateNotifier *obj, gint *ret, GError **error) {
 	*ret = 1;
 	return TRUE;	
