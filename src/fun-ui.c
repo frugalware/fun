@@ -462,7 +462,7 @@ fun_ui_init (void)
 	fun_main_window_init ();
 	fun_config_dialog_init ();
 	
-	if (fun_dbus_perform_service (TEST_SERVICE, NULL) == FALSE)
+	if (fun_dbus_perform_service (TEST_SERVICE, NULL, NULL) == FALSE)
 	{
 		g_print (_("Failed to connect to the fun daemon\n"));
 		fun_tooltip_set_text2 (tooltip, _("Not connected to fun daemon"), FALSE);
@@ -485,7 +485,7 @@ fun_timeout_conn (void)
 {
 	if (connected == TRUE)
 		return FALSE;
-	if (fun_dbus_perform_service (TEST_SERVICE, NULL) == FALSE)
+	if (fun_dbus_perform_service (TEST_SERVICE, NULL, NULL) == FALSE)
 	{
 		connected = FALSE;
 	}
@@ -514,7 +514,7 @@ fun_timeout_func (void)
 	 * disable the "check" button so that the user doesn't interrupt the 
 	 * checking process */
 	gtk_widget_set_sensitive (fun_check_btn, FALSE);
-	if (fun_dbus_perform_service (PERFORM_UPDATE, &plist)==TRUE)
+	if (fun_dbus_perform_service (PERFORM_UPDATE, NULL, &plist)==TRUE)
 	{
 		//g_print ("\nlist is\n %s", plist);
 		fun_tooltip_set_text1 (tooltip, _("Updates are available"), TRUE);

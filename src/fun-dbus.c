@@ -40,7 +40,7 @@ fun_dbus_init (void)
 }
 
 gboolean
-fun_dbus_perform_service (guint service, gchar **package_list)
+fun_dbus_perform_service (guint service, gchar *ip_arg, gchar **op_arg)
 {
 	DBusMessage	*message = NULL;
 	DBusMessage	*reply = NULL;
@@ -64,7 +64,7 @@ fun_dbus_perform_service (guint service, gchar **package_list)
 				return FALSE;
 			}
 			if (!dbus_message_get_args (reply, &error,
-						DBUS_TYPE_STRING, package_list,
+						DBUS_TYPE_STRING, op_arg,
 						DBUS_TYPE_INVALID))
 			{
 				fprintf (stderr, "ERROR: %s\n", error.message);

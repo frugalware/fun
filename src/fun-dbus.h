@@ -6,11 +6,13 @@
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
 
-#define PERFORM_UPDATE	1
-#define TEST_SERVICE	2
+#define PERFORM_UPDATE			1
+#define TEST_SERVICE			2
+#define GET_PACKAGE_VERSION		3
+#define GET_PACKAGE_DESCRIPTION	4
 
 gboolean fun_dbus_init (void);
 
-gboolean fun_dbus_perform_service (guint, gchar **);
+gboolean fun_dbus_perform_service (guint, gchar *, gchar **);
 
 #endif
