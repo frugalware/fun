@@ -36,6 +36,7 @@ static void fun_about_show (void);
 static void fun_about_hide (void);
 static void fun_main_window_init (void);
 static void fun_main_window_hide (void);
+static void fun_populate_updates_tvw (gchar *plist);
 
 #define FUN_ICON  			"fun.png"
 #define FUN_TOOLTIP_ICON 	"fun.png"
@@ -50,6 +51,7 @@ static GtkStatusIcon	*fun_icon = NULL;
 static GtkWidget		*fun_about_dlg = NULL;
 static GtkWidget		*fun_main_window = NULL;
 static GtkWidget		*fun_updates_tvw = NULL;
+static GtkWidget		*fun_check_btn = NULL;
 static GdkPixbuf		*fun_about_pixbuf = NULL;
 static GtkWidget		*fun_config_dlg = NULL;
 static GtkAdjustment 	*fun_config_upd_int_adj = NULL;
@@ -388,6 +390,7 @@ fun_main_window_init (void)
 	GtkTreeViewColumn	*column = NULL;
 	
 	fun_main_window = glade_xml_get_widget (xml, "fun_mainwindow");
+	fun_check_btn = glade_xml_get_widget (xml, "button_check");
 	fun_updates_tvw = glade_xml_get_widget (xml, "update_list_tvw");
 	store = gtk_list_store_new (4,
 				GDK_TYPE_PIXBUF, 	/* Status icon */
@@ -501,21 +504,31 @@ static gboolean
 fun_timeout_func (void)
 {
 	gchar *plist = NULL;
+
 	/* Don't do anything if we're not connected to the daemon */
 	if (!connected)
 		return TRUE;
 
+	/* if updates are available, popup a notification to notify the user 
+	 * and also populate the updates list in main window. BUT, before that
+	 * disable the "check" button so that the user doesn't interrupt the 
+	 * checking process */
+	gtk_widget_set_sensitive (fun_check_btn, FALSE);
 	if (fun_dbus_perform_service (PERFORM_UPDATE, &plist)==TRUE)
 	{
 		//g_print ("\nlist is\n %s", plist);
-		//g_print ("Yeaahaaw! success\n");
 		fun_tooltip_set_text1 (tooltip, _("Updates are available"), TRUE);
 		fun_tooltip_set_text2 (tooltip, _("Click here to know more.."), TRUE);
 		fun_tooltip_show (tooltip);
 		cb_fun_systray_enter_notify (NULL, NULL, NULL);
+		/* populate the update list */
+		fun_populate_updates_tvw (plist);
 	}
 	else
 		g_print ("Damn !\n");
+
+	/* re-enable the "check" button now */
+	gtk_widget_set_sensitive (fun_check_btn, TRUE);
 
 	return TRUE;
 }
@@ -534,8 +547,8 @@ fun_about_show (void)
 		fun_about_dlg = gtk_about_dialog_new ();
 		gtk_about_dialog_set_name (GTK_ABOUT_DIALOG(fun_about_dlg), PACKAGE);
 		gtk_about_dialog_set_version (GTK_ABOUT_DIALOG(fun_about_dlg), ver);
-		gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG(fun_about_dlg), "(C) 2007 Frugalware Developer Team (GPL)");
-		gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG(fun_about_dlg), "Frugalware Update Notifier");
+		gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG(fun_about_dlg), _("(C) 2007 Frugalware Developer Team (GPL)"));
+		gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG(fun_about_dlg), _("Frugalware Update Notifier"));
 		gtk_about_dialog_set_license (GTK_ABOUT_DIALOG(fun_about_dlg), NULL);
 		gtk_about_dialog_set_website (GTK_ABOUT_DIALOG(fun_about_dlg), "http://www.frugalware.org/");
 		gtk_about_dialog_set_website_label (GTK_ABOUT_DIALOG(fun_about_dlg), "http://www.frugalware.org/");
@@ -556,6 +569,12 @@ fun_about_show (void)
 	gtk_widget_show (fun_about_dlg);
 
 	return;
+}
+
+static void
+fun_populate_updates_tvw (gchar *plist)
+{
+	g_print ("updates are: %s \n", plist);	
 }
 
 static void
