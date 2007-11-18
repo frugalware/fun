@@ -4,9 +4,9 @@
 <glade-interface>
   <widget class="GtkWindow" id="fun_mainwindow">
     <property name="border_width">12</property>
-    <property name="title" translatable="yes">Frugalware Update Manager</property>
+    <property name="title" translatable="yes">Frugalware Update Notifier</property>
     <property name="window_position">GTK_WIN_POS_CENTER_ALWAYS</property>
-    <property name="default_width">680</property>
+    <property name="default_width">600</property>
     <property name="default_height">420</property>
     <signal name="destroy" handler="gtk_main_quit"/>
     <child>
@@ -19,19 +19,7 @@
             <property name="toolbar_style">GTK_TOOLBAR_BOTH</property>
             <property name="show_arrow">False</property>
             <child>
-              <widget class="GtkToolButton" id="toolbutton1">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">_Synchronize</property>
-                <property name="use_underline">True</property>
-                <property name="stock_id">gtk-network</property>
-                <signal name="clicked" handler="synch"/>
-              </widget>
-              <packing>
-                <property name="expand">False</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkToolButton" id="toolbutton2">
+              <widget class="GtkToolButton" id="button_check">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">_Check</property>
                 <property name="use_underline">True</property>
@@ -43,9 +31,9 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkToolButton" id="toolbutton3">
+              <widget class="GtkToolButton" id="button_prefs">
                 <property name="visible">True</property>
-                <property name="stock_id">gtk-execute</property>
+                <property name="stock_id">gtk-preferences</property>
                 <signal name="clicked" handler="execution"/>
               </widget>
               <packing>
@@ -53,7 +41,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkToolButton" id="toolbutton5">
+              <widget class="GtkToolButton" id="button_about">
                 <property name="visible">True</property>
                 <property name="stock_id">gtk-about</property>
                 <signal name="clicked" handler="show_about"/>
@@ -63,9 +51,9 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkToolButton" id="toolbutton5">
+              <widget class="GtkToolButton" id="button_close">
                 <property name="visible">True</property>
-                <property name="stock_id">gtk-quit</property>
+                <property name="stock_id">gtk-close</property>
                 <signal name="clicked" handler="gtk_main_quit"/>
               </widget>
               <packing>
@@ -91,7 +79,7 @@
                 <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
                 <property name="shadow_type">GTK_SHADOW_IN</property>
                 <child>
-                  <widget class="GtkTreeView" id="treeview1">
+                  <widget class="GtkTreeView" id="update_list_tvw">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="rules_hint">True</property>
@@ -105,26 +93,23 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkScrolledWindow" id="scrolledwindow3">
+              <widget class="GtkHButtonBox" id="hbuttonbox1">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
-                <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
-                <property name="shadow_type">GTK_SHADOW_IN</property>
+                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                <property name="layout_style">GTK_BUTTONBOX_START</property>
                 <child>
-                  <widget class="GtkViewport" id="viewport1">
+                  <widget class="GtkButton" id="launch_button">
                     <property name="visible">True</property>
-                    <child>
-                      <widget class="GtkLabel" id="label1">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">label1</property>
-                      </widget>
-                    </child>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                    <property name="label" translatable="yes">Launch Gfpm</property>
+                    <property name="response_id">0</property>
                   </widget>
                 </child>
               </widget>
               <packing>
-                <property name="resize">True</property>
+                <property name="resize">False</property>
                 <property name="shrink">True</property>
               </packing>
             </child>
