@@ -34,9 +34,13 @@
 
 static void fun_about_show (void);
 static void fun_about_hide (void);
+static void fun_main_window_init (void);
+static void fun_main_window_hide (void);
 
 #define FUN_ICON  			"fun.png"
 #define FUN_TOOLTIP_ICON 	"fun.png"
+
+extern GladeXML *xml;
 
 EggTrayIcon	*icon = NULL;
 FunTooltip	*tooltip = NULL;
@@ -44,6 +48,8 @@ GtkWidget	*stooltip;
 
 static GtkStatusIcon	*fun_icon = NULL;
 static GtkWidget		*fun_about_dlg = NULL;
+static GtkWidget		*fun_main_window = NULL;
+static GtkWidget		*fun_updates_tvw = NULL;
 static GdkPixbuf		*fun_about_pixbuf = NULL;
 static GtkWidget		*fun_config_dlg = NULL;
 static GtkAdjustment 	*fun_config_upd_int_adj = NULL;
@@ -182,6 +188,13 @@ cb_fun_systray_leave_notify (GtkWidget *widget, GdkEventCrossing *event, gpointe
 static gboolean
 cb_fun_systray_icon_clicked (GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
+	/* Left Click */
+	if (event->button == 1)
+	{
+		gtk_widget_show (GTK_WIDGET(fun_main_window));
+		return TRUE;
+	}
+	/* Right Click */
 	if (event->button == 3)
 	{
 		GtkWidget	*menu = NULL;
@@ -367,6 +380,75 @@ fun_config_dialog_init (void)
 	return;
 }
 
+static void
+fun_main_window_init (void)
+{
+	GtkListStore		*store = NULL;
+	GtkCellRenderer		*renderer = NULL;
+	GtkTreeViewColumn	*column = NULL;
+	
+	fun_main_window = glade_xml_get_widget (xml, "fun_mainwindow");
+	fun_updates_tvw = glade_xml_get_widget (xml, "update_list_tvw");
+	store = gtk_list_store_new (4,
+				GDK_TYPE_PIXBUF, 	/* Status icon */
+				G_TYPE_STRING,   	/* Package name */
+				G_TYPE_STRING,  	/* Latest version */
+				G_TYPE_STRING);  	/* Package Description */
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	column = gtk_tree_view_column_new_with_attributes (_("S"),
+							renderer,
+							"pixbuf", 0,
+							NULL);
+	gtk_tree_view_column_set_resizable (column, FALSE);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(fun_updates_tvw), column);
+
+	renderer = gtk_cell_renderer_text_new ();
+	column = gtk_tree_view_column_new_with_attributes (_("Package Name"),
+							renderer,
+							"text", 1,
+							NULL);
+	gtk_tree_view_column_set_resizable (column, FALSE);
+	gtk_tree_view_column_set_expand (column, FALSE);
+	gtk_tree_view_column_set_min_width (column, 80);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(fun_updates_tvw), column);
+
+	renderer = gtk_cell_renderer_text_new ();
+	column = gtk_tree_view_column_new_with_attributes (_("Latest Version"),
+							renderer,
+							"text", 2,
+							NULL);
+	gtk_tree_view_column_set_resizable (column, FALSE);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(fun_updates_tvw), column);
+
+	renderer = gtk_cell_renderer_text_new ();
+	column = gtk_tree_view_column_new_with_attributes (_("Description"),
+							renderer,
+							"text", 3,
+							NULL);
+	gtk_tree_view_column_set_min_width (column, 140);
+	gtk_tree_view_column_set_expand (column, TRUE);
+	gtk_tree_view_column_set_resizable (column, FALSE);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(fun_updates_tvw), column);
+
+	gtk_tree_view_set_model (GTK_TREE_VIEW(fun_updates_tvw), GTK_TREE_MODEL(store));
+	
+	/* connect some important signals */
+	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"button_about")),
+						"clicked",
+						G_CALLBACK(fun_about_show),
+						NULL);
+	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"button_prefs")),
+						"clicked",
+						G_CALLBACK(fun_config_dialog_show),
+						NULL);
+	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"button_close")),
+						"clicked",
+						G_CALLBACK(fun_main_window_hide),
+						NULL);
+	
+	return;
+}
+
 void
 fun_ui_init (void)
 {
@@ -374,6 +456,7 @@ fun_ui_init (void)
 	gulong		seconds = 0;
 	
 	fun_systray_create ();
+	fun_main_window_init ();
 	fun_config_dialog_init ();
 	
 	if (fun_dbus_perform_service (TEST_SERVICE, NULL) == FALSE)
@@ -483,4 +566,11 @@ fun_about_hide (void)
 	return;
 }
 
+static void
+fun_main_window_hide (void)
+{
+	gtk_widget_hide (fun_main_window);
+
+	return;
+}
 
