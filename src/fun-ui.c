@@ -574,7 +574,28 @@ fun_about_show (void)
 static void
 fun_populate_updates_tvw (gchar *plist)
 {
-	g_print ("updates are: %s \n", plist);	
+	char 			*pkg = NULL;
+	GtkListStore	*store = NULL;
+	GtkTreeIter		iter;
+	GList			*l = NULL;	
+	
+	/* convert the updates string to a GList */
+	GList	*pack_list = NULL;
+	pkg = strtok (plist, " ");
+	pack_list = g_list_append (pack_list, (gpointer)g_strdup(pkg));
+	while ((pkg=strtok(NULL, " "))!=NULL) pack_list = g_list_append (pack_list, (gpointer)g_strdup(pkg));
+	
+	/* populate the updates treeview store */
+	store = GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW(fun_updates_tvw)));
+	for (l = g_list_first (pack_list); l; l = g_list_next (l))
+	{
+		gchar *ver = NULL;
+		gchar *desc = NULL;
+		fun_dbus_perform_service (GET_PACKAGE_VERSION, l->data, &ver);
+		gtk_list_store_append (store, &iter);
+		fun_dbus_perform_service (GET_PACKAGE_DESCRIPTION, l->data, &desc);
+		gtk_list_store_set (store, &iter, 0, NULL, 1, l->data, 2, ver, 3, desc, -1);
+	}
 }
 
 static void

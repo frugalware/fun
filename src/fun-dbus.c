@@ -103,7 +103,62 @@ fun_dbus_perform_service (guint service, gchar *ip_arg, gchar **op_arg)
 			dbus_message_unref (message);
 			break;
 		}
-		
+		case GET_PACKAGE_VERSION:
+		{
+			dbus_error_init (&error);
+			message = dbus_message_new_method_call ("org.frugalware.FWUpdateNotifier",
+								"/org/frugalware/FWUpdateNotifier",
+								"org.frugalware.FWUpdateNotifier",
+								"GetPackageVersion");
+			dbus_message_append_args (message, DBUS_TYPE_STRING, &ip_arg);
+			reply = dbus_connection_send_with_reply_and_block (fun_conn, message, reply_timeout, &error);
+			if (dbus_error_is_set(&error))
+			{
+				fprintf (stderr, "ERROR: %s\n", error.message);
+				dbus_error_free (&error);
+				return FALSE;
+			}
+			if (!dbus_message_get_args (reply, &error,
+						DBUS_TYPE_STRING, op_arg,
+						DBUS_TYPE_INVALID))
+			{
+				fprintf (stderr, "ERROR: %s\n", error.message);
+				dbus_error_free (&error);
+				return FALSE;
+			}
+			
+			dbus_message_unref (reply);
+			dbus_message_unref (message);
+			break;
+		}
+		case GET_PACKAGE_DESCRIPTION:
+		{
+			dbus_error_init (&error);
+			message = dbus_message_new_method_call ("org.frugalware.FWUpdateNotifier",
+								"/org/frugalware/FWUpdateNotifier",
+								"org.frugalware.FWUpdateNotifier",
+								"GetPackageDescription");
+			dbus_message_append_args (message, DBUS_TYPE_STRING, &ip_arg);
+			reply = dbus_connection_send_with_reply_and_block (fun_conn, message, reply_timeout, &error);
+			if (dbus_error_is_set(&error))
+			{
+				fprintf (stderr, "ERROR: %s\n", error.message);
+				dbus_error_free (&error);
+				return FALSE;
+			}
+			if (!dbus_message_get_args (reply, &error,
+						DBUS_TYPE_STRING, op_arg,
+						DBUS_TYPE_INVALID))
+			{
+				fprintf (stderr, "ERROR: %s\n", error.message);
+				dbus_error_free (&error);
+				return FALSE;
+			}
+			
+			dbus_message_unref (reply);
+			dbus_message_unref (message);
+			break;
+		}
 		default: break;
 	}
 
