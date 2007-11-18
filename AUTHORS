@@ -2,8 +2,11 @@ Developers
 ==========
 * Priyank Gosalia <priyankmg@gmail.com>
 
-fund is based on netconfigd.
+* fund is based on netconfigd.
 netconfigd is Copyright (C) 2006-2007 Alex Smith <alex@alex-smith.me.uk>
+
+* parts of fun's user interface are borrowed from frugalware-update-manager
+frugalware-update-manager is Copyright (C) Marcus Habermehl <bmh1980@yahoo.de>
 
 Translators
 ===========
