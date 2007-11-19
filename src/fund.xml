@@ -9,14 +9,10 @@
 			<annotation name="org.freedesktop.DBus.GLib.CSymbol" value="fund_test_service"/>
 			<arg type="i" name="ret" direction="out" />
 		</method>
-		<method name="GetPackageVersion">
-			<annotation name="org.freedesktop.DBus.GLib.CSymbol" value="fund_get_package_version"/>
+		<method name="GetPackageInfo">
+			<annotation name="org.freedesktop.DBus.GLib.CSymbol" value="fund_get_package_info"/>
 			<arg type="s" name="package" direction="in" />
 			<arg type="s" name="version" direction="out" />
-		</method>
-		<method name="GetPackageDescription">
-			<annotation name="org.freedesktop.DBus.GLib.CSymbol" value="fund_get_package_description"/>
-			<arg type="s" name="package" direction="in" />
 			<arg type="s" name="description" direction="out" />
 		</method>
 	</interface>
