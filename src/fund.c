@@ -183,7 +183,7 @@ gboolean fund_test_service(FWUpdateNotifier *obj, gint *ret, GError **error) {
 }
 
 void usage() {
-	printf("fund (Frugalware Update Nofifier Daemon) v" VERSION "\n");
+	printf("fund (Frugalware Update Notifier Daemon) v" VERSION "\n");
 	printf(" --help        Display this help text\n");
 	printf(" --daemon      Fork into the background\n");
 }
