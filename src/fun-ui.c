@@ -513,6 +513,8 @@ fun_timeout_conn (void)
 		connected = TRUE;
 		g_timeout_add_seconds (20, (GSourceFunc)fun_timeout_func, NULL);
 		fun_tooltip_set_text2 (tooltip, "", FALSE);
+		/* set the status to Idle */
+		fun_update_status (_("Idle"));
 		return FALSE;
 	}
 
