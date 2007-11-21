@@ -1,0 +1,58 @@
+FUN a.k.a Frugalware Update Notifier
+====================================
+
+FUN is a client-server application with a sole purpose to notify the 
+user of new package updates.
+
+fund (fun daemon) runs in the background waiting for commands from the
+client. The fun client is a small application that resides in the user's 
+system tray and periodically sends certain commands to the fun daemon to get
+information about package updates and other package related information.
+
+The fun daemon (fund) is written in C and uses DBUS for communication. 
+The fun client (fun) is written in C using the GTK+ toolkit.
+
+fun is not a DE specific application and it can work on GNOME/XFCE/KDE
+or any other DE provided the following requirements are satisfied.
+
+Requirements
+============
+* pacman-g2 >= 3.6.4
+* dbus-glib >= 0.73
+* gtk+2 >= 2.12.0
+* libglade-2.0 >= 2.6
+
+For Developers
+==============
+If someone is interested in developing a client for FUN, following are
+the services currently provided by FUN daemon.
+
+1) TestService
+This command is basically used to test whether the client can connect to
+the FUN daemon. Before sending any other commands, make sure you test
+connectivity to the daemon using TestService.
+
+2) PerformUpdate
+This command checks for package updates. It tells the daemon to perform
+a repository sync and check if any updates are available. It returns the
+list of available package updates as a string or otherwise NULL.
+
+3) GetPackageInfo
+This command is used to get extra information about an available package
+update, like it's version, description etc. It accepts one argument, the
+package name for which information is needed. It returns two parameters
+- the package's latest version and it's description as strings.
+
+NOTE: Service names are subject to change
+
+Bugs
+====
+If you encounter any bug(s) in FUN, please report them at
+http://www.bugs.frugalware.org/
+
+Author
+======
+Priyank M. Gosalia <priyankmg@gmail.com>
+
+
+
