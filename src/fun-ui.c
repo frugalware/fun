@@ -78,12 +78,12 @@ static gboolean fun_timeout_conn (void);
 
 static void fun_config_dialog_show (void);
 static void fun_restart (void);
+static GdkPixbuf * fun_get_icon (const char *icon, int size);
 static void fun_update_status (const char *message);
 
 static gboolean	cb_fun_systray_icon_clicked (GtkWidget *widget, GdkEventButton *event, gpointer data);
 static gboolean cb_fun_systray_enter_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer data);
 static gboolean cb_fun_systray_leave_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer data);
-
 static void cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data);
 
 void
@@ -549,7 +549,8 @@ fun_populate_updates_tvw (gchar *plist)
 	char 			*pkg = NULL;
 	GtkListStore	*store = NULL;
 	GtkTreeIter		iter;
-	GList			*l = NULL;	
+	GList			*l = NULL;
+	GdkPixbuf		*icon = NULL;
 	
 	/* convert the updates string to a GList */
 	GList	*pack_list = NULL;
@@ -558,6 +559,7 @@ fun_populate_updates_tvw (gchar *plist)
 	while ((pkg=strtok(NULL, " "))!=NULL) pack_list = g_list_append (pack_list, (gpointer)g_strdup(pkg));
 	
 	/* populate the updates treeview store */
+	icon = fun_get_icon ("fun", 16);
 	store = GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW(fun_updates_tvw)));
 	for (l = g_list_first (pack_list); l; l = g_list_next (l))
 	{
@@ -565,8 +567,11 @@ fun_populate_updates_tvw (gchar *plist)
 		gchar *desc = NULL;
 		fun_dbus_perform_service (GET_PACKAGE_INFO, l->data, &ver, &desc);
 		gtk_list_store_append (store, &iter);
-		gtk_list_store_set (store, &iter, 0, NULL, 1, l->data, 2, ver, 3, desc, -1);
+		gtk_list_store_set (store, &iter, 0, icon, 1, l->data, 2, ver, 3, desc, -1);
 	}
+	g_object_unref (icon);
+	
+	return;
 }
 
 static void
@@ -583,6 +588,19 @@ fun_main_window_hide (void)
 	gtk_widget_hide (fun_main_window);
 
 	return;
+}
+
+static GdkPixbuf *
+fun_get_icon (const char *icon, int size)
+{
+	GtkIconTheme	*icon_theme = NULL;
+	GdkPixbuf		*ret = NULL;
+	GError			*error = NULL;
+	
+	icon_theme = gtk_icon_theme_get_default ();
+	ret = gtk_icon_theme_load_icon (icon_theme,	icon, size, 0, &error);
+
+	return ret;
 }
 
 static void
