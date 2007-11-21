@@ -116,13 +116,11 @@ fun_systray_create (void)
 	GdkPixbuf	*icon_tooltip;
 	GtkWidget	*systray_icon;
 	GdkColor 	color;
-	
-	icon_file = g_strdup ("/usr/share/fun/fun.png");
+
 	/* create the tray icon */
 	icon = egg_tray_icon_new ("Frugalware Update Notifier");
-	icon_image = gdk_pixbuf_new_from_file_at_size (icon_file, 20, 20, NULL);
+	icon_image = fun_get_icon ("fun", 24);
 	systray_icon = gtk_image_new_from_pixbuf (icon_image);
-	g_free (icon_file);
 	gtk_container_add (GTK_CONTAINER (icon), systray_icon);
 	g_object_unref (icon_image);
 	
@@ -133,9 +131,7 @@ fun_systray_create (void)
 	/* set the default tooltip */
 	tooltip = fun_tooltip_new ();
 	fun_tooltip_set_text1 (tooltip, "Frugalware Update Notifier", TRUE);
-	icon_file = g_strdup ("/usr/share/fun/fun.png");
-	icon_tooltip = gdk_pixbuf_new_from_file_at_size (icon_file, 32, 32, NULL);
-	g_free (icon_file);
+	icon_tooltip = fun_get_icon ("fun", 32);
 	fun_tooltip_set_icon (tooltip, icon_tooltip);
 	g_object_unref (icon_tooltip);
 	
