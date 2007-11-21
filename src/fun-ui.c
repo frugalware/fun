@@ -73,7 +73,25 @@ static const gchar *artists[] = { \
 					NULL
 				};
 
-static const gchar translators[] = "";
+static const gchar translators[] = \
+				"Michel Hermier <michel.hermier@gmail.com> (fr_FR)\n"
+				"Miklos Vajna <vmiklos@frugalware.org> (hu_HU)\n";
+				
+static gchar *license =
+("This program is free software; you can redistribute it and/or "
+"modify it under the terms of the GNU General Public Licence as "
+"published by the Free Software Foundation; either version 2 of the "
+"Licence, or (at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, "
+"but WITHOUT ANY WARRANTY; without even the implied warranty of "
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU "
+"General Public Licence for more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public Licence "
+"along with this program; if not, write to the Free Software "
+"Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, "
+"MA  02110-1301  USA");
 
 
 static gboolean fun_timeout_func (void);
@@ -588,7 +606,7 @@ fun_about_show (void)
 		gtk_about_dialog_set_version (GTK_ABOUT_DIALOG(fun_about_dlg), ver);
 		gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG(fun_about_dlg), _("(C) 2007 Frugalware Developer Team (GPL)"));
 		gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG(fun_about_dlg), _("Frugalware Update Notifier"));
-		gtk_about_dialog_set_license (GTK_ABOUT_DIALOG(fun_about_dlg), NULL);
+		gtk_about_dialog_set_license (GTK_ABOUT_DIALOG(fun_about_dlg), license);
 		gtk_about_dialog_set_website (GTK_ABOUT_DIALOG(fun_about_dlg), "http://www.frugalware.org/");
 		gtk_about_dialog_set_website_label (GTK_ABOUT_DIALOG(fun_about_dlg), "http://www.frugalware.org/");
 		gtk_about_dialog_set_logo (GTK_ABOUT_DIALOG(fun_about_dlg), fun_about_pixbuf);
