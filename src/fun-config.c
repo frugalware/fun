@@ -75,6 +75,16 @@ fun_config_get_value_int (const char *key)
 }
 
 void
+fun_config_set_value_string (const char *key, char *value)
+{
+	char *val = g_strdup_printf ("%d", value);
+	cfg_add_key (&conf, key, value);
+	g_free (val);
+
+	return;
+}
+
+void
 fun_config_set_value_int (const char *key, int value)
 {
 	char *val = g_strdup_printf ("%d", value);
