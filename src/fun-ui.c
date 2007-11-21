@@ -599,7 +599,7 @@ fun_about_show (void)
 		GList *list;
 
 		if (!fun_about_pixbuf)
-			fun_about_pixbuf = gdk_pixbuf_new_from_file ("/usr/share/fun/fun.png", NULL);
+			fun_about_pixbuf = fun_get_icon ("fun", 128);
 		ver = g_strdup_printf ("%s", VERSION);
 		fun_about_dlg = gtk_about_dialog_new ();
 		gtk_about_dialog_set_name (GTK_ABOUT_DIALOG(fun_about_dlg), PACKAGE);
