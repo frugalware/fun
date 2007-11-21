@@ -555,8 +555,6 @@ fun_timeout_func (void)
 		/* populate the update list */
 		fun_populate_updates_tvw (plist);
 	}
-	else
-		g_print ("Damn !\n");
 
 	/* re-enable the "check" button now */
 	gtk_widget_set_sensitive (fun_check_btn, TRUE);
