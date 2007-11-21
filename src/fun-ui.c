@@ -36,6 +36,7 @@ static void fun_about_show (void);
 static void fun_about_hide (void);
 static void fun_main_window_init (void);
 static void fun_main_window_hide (void);
+static void fun_launch_gfpm (void);
 static void fun_populate_updates_tvw (gchar *plist);
 
 #define FUN_ICON  			"fun.png"
@@ -441,6 +442,11 @@ fun_main_window_init (void)
 						"clicked",
 						G_CALLBACK(fun_main_window_hide),
 						NULL);
+	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"launch_button")),
+						"clicked",
+						G_CALLBACK(fun_launch_gfpm),
+						NULL);
+					
 	return;
 }
 
@@ -651,6 +657,19 @@ fun_update_status (const char *message)
 		return;
 	ci = gtk_statusbar_get_context_id (GTK_STATUSBAR(fun_statusbar), "-");
 	gtk_statusbar_push (GTK_STATUSBAR(fun_statusbar), ci, message);
+	
+	return;
+}
+
+static void
+fun_launch_gfpm (void)
+{
+	gchar *cmdline = NULL;
+	gchar *su = fun_config_get_value_string ("gfpm_launcher");
+	
+	cmdline = g_strdup_printf ("%s gfpm", su);
+	system (cmdline);
+	g_free (cmdline);
 	
 	return;
 }
