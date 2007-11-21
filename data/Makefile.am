@@ -1,3 +1,5 @@
+SUBDIRS = icons
+
 gladedir	= $(datadir)/fun
 glade_DATA	= fun.glade
 
