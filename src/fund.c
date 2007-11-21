@@ -3,7 +3,7 @@
  *
  *  Copyright (C) 2007 by Priyank Gosalia <priyankmg@gmail.com>
  *  Portions of this code are borrowed from netconfigd
- *  netconfigd is Copyright (C) 2007 Alex Smith <alex@alex-smith.me.uk>
+ *  netconfigd is Copyright (C) 2007 by Alex Smith <alex@alex-smith.me.uk>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
