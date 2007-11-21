@@ -22,6 +22,41 @@ Requirements
 * gtk+2 >= 2.12.0
 * libglade-2.0 >= 2.6
 
+Configuring FUN
+===============
+FUN stores it's configuration in /home/user/.funrc file. Although you
+can configure the various options directly from within FUN, you may even
+edit the .funrc file manually. Currently, fun supports the following two
+configuration options:
+
+1)	update_interval
+
+	This specifies the time in minutes after which FUN should check for
+	package updates.
+	For eg: If you want FUN to check for new updates every hour, you
+	should set update_interval=60 in the configuration file.
+
+2)	gfpm_launcher
+
+	FUN doesn't have any inherent capability of updating your system
+	once new packages are available. Once the user is notified of new
+	updates, he/she may launch Gfpm (Graphical Frugalware Package
+	Manager) to download and install the new updates.
+	Updating packages on the system requires Gfpm to be run with 
+	administrator (root) privileges. This can be achieved in three ways - gksu/kdesu/sudo.
+
+	If you're using GNOME/XFCE, you probably need gksu. On KDE, you'll need
+	kdesu. If you have setup sudo (see man sudo) then you may use sudo.
+
+	This setting lets FUN to run Gfpm with one of the above mentioned
+	ways. Possible values for this setting are
+	gksu
+	kdesu
+	sudo
+
+	For eg: gfpm_launcher=gksu  (If you're using GNOME/XFCE)
+
+
 For Developers
 ==============
 If someone is interested in developing a client for FUN, following are
