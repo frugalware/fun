@@ -256,6 +256,23 @@ cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data)
 	GtkAdjustment 	*adj = NULL;
 	guint			interval = 0;
 	guint			old_interval = 0;
+	gint			sel = -1;
+	
+	switch (gtk_combo_box_get_active(GTK_COMBO_BOX(fun_config_gfpm_launcher_combo)))
+	{
+		case 0:	/* gksu */
+				fun_config_set_value_string ("gfpm_launcher", "gksu");
+				break;
+		case 1:	/* kdesu */
+				fun_config_set_value_string ("gfpm_launcher", "kdesu");
+				break;
+		case 2:	/* sudo */
+				fun_config_set_value_string ("gfpm_launcher", "sudo");
+				break;
+		default:
+				break;
+	}
+	fun_config_save ();
 	
 	adj = gtk_spin_button_get_adjustment (GTK_SPIN_BUTTON(data));
 	interval = gtk_adjustment_get_value (adj);
@@ -274,6 +291,8 @@ cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data)
 			fun_restart ();
 		}
 	}
+	
+	fun_config_save ();
 	gtk_widget_hide (fun_config_dlg);
 	
 	return;
