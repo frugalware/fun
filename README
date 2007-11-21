@@ -22,6 +22,17 @@ Requirements
 * gtk+2 >= 2.12.0
 * libglade-2.0 >= 2.6
 
+Using FUN
+=========
+You need to start the daemon by running the following command as root:
+# service fund start
+
+Once the daemon is started, you may launch the client by running the
+following command:
+$ fun
+
+(A shortcut to FUN is also available in your respective DEs)
+
 Configuring FUN
 ===============
 FUN stores it's configuration in /home/user/.funrc file. Although you
