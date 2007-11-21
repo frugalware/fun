@@ -195,7 +195,10 @@ cb_fun_systray_icon_clicked (GtkWidget *widget, GdkEventButton *event, gpointer 
 	/* Left Click */
 	if (event->button == 1)
 	{
-		gtk_widget_show (GTK_WIDGET(fun_main_window));
+		if (!GTK_WIDGET_VISIBLE(fun_main_window))
+			gtk_widget_show (GTK_WIDGET(fun_main_window));
+		else
+			fun_main_window_hide ();
 		return TRUE;
 	}
 	/* Right Click */
