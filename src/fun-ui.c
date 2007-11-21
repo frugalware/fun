@@ -401,7 +401,10 @@ fun_main_window_init (void)
 						"clicked",
 						G_CALLBACK(fun_main_window_hide),
 						NULL);
-	
+	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"button_main_close")),
+						"clicked",
+						G_CALLBACK(fun_main_window_hide),
+						NULL);
 	return;
 }
 
