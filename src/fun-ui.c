@@ -406,6 +406,11 @@ fun_ui_init (void)
 {
 	GError		*error = NULL;
 	gulong		seconds = 0;
+	static gchar *error_msg = ("Update checking has been disabled because FUN has detected "
+								"that the update notifier daemon is not running. FUN will attempt "
+								"to reconnect to the daemon every 45 seconds. \n\nYou can start the "
+								"update notifier daemon by running the following command as root: \n\n"
+								"'service fund start'");
 	
 	fun_systray_create ();
 	fun_main_window_init ();
@@ -418,8 +423,10 @@ fun_ui_init (void)
 		connected = FALSE;
 		/* set the status */
 		fun_update_status (_("The frugalware update notifier daemon is not running. Update checking is disabled"));
+		/* display an error */
+		fun_error (_("Update checking disabled"), _(error_msg));
 		/* start the connection retry timeout */
-		g_timeout_add_seconds (30, (GSourceFunc)fun_timeout_conn, NULL);
+		g_timeout_add_seconds (45, (GSourceFunc)fun_timeout_conn, NULL);
 		return;
 	}
 	seconds = fun_config_get_value_int ("update_interval") * 60;
