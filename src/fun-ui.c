@@ -385,6 +385,10 @@ fun_main_window_init (void)
 	gtk_tree_view_set_model (GTK_TREE_VIEW(fun_updates_tvw), GTK_TREE_MODEL(store));
 	
 	/* connect some important signals */
+	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"button_check")),
+						"clicked",
+						G_CALLBACK(fun_timeout_func),
+						NULL);
 	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"button_about")),
 						"clicked",
 						G_CALLBACK(fun_about_show),
@@ -470,7 +474,11 @@ fun_timeout_func (void)
 		return TRUE;
 
 	/* set the status to let the user know that fun is checking for an update */
-	fun_update_status (_("Checking for new updates"));
+	fun_update_status (_("Checking for new updates..."));
+	while(gtk_events_pending()) gtk_main_iteration ();
+	/* clear the updates list store and give a small delay */
+	gtk_list_store_clear (GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(fun_updates_tvw))));
+	sleep (2);
 	/* if updates are available, popup a notification to notify the user 
 	 * and also populate the updates list in main window. BUT, before that
 	 * disable the "check" button so that the user doesn't interrupt the 
