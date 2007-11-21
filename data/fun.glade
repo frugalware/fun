@@ -122,7 +122,7 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkStatusbar" id="statusbar1">
+          <widget class="GtkStatusbar" id="fun_statusbar">
             <property name="visible">True</property>
           </widget>
           <packing>

@@ -50,6 +50,7 @@ GtkWidget	*stooltip;
 static GtkStatusIcon	*fun_icon = NULL;
 static GtkWidget		*fun_about_dlg = NULL;
 static GtkWidget		*fun_main_window = NULL;
+static GtkWidget		*fun_statusbar = NULL;
 static GtkWidget		*fun_updates_tvw = NULL;
 static GtkWidget		*fun_check_btn = NULL;
 static GdkPixbuf		*fun_about_pixbuf = NULL;
@@ -77,6 +78,7 @@ static gboolean fun_timeout_conn (void);
 
 static void fun_config_dialog_show (void);
 static void fun_restart (void);
+static void fun_update_status (const char *message);
 
 static gboolean	cb_fun_systray_icon_clicked (GtkWidget *widget, GdkEventButton *event, gpointer data);
 static gboolean cb_fun_systray_enter_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer data);
@@ -336,6 +338,7 @@ fun_main_window_init (void)
 	GtkTreeViewColumn	*column = NULL;
 	
 	fun_main_window = glade_xml_get_widget (xml, "fun_mainwindow");
+	fun_statusbar = glade_xml_get_widget (xml, "fun_statusbar");
 	fun_check_btn = glade_xml_get_widget (xml, "button_check");
 	fun_updates_tvw = glade_xml_get_widget (xml, "update_list_tvw");
 	store = gtk_list_store_new (4,
@@ -413,6 +416,8 @@ fun_ui_init (void)
 		g_print (_("Failed to connect to the fun daemon\n"));
 		fun_tooltip_set_text2 (tooltip, _("Not connected to fun daemon"), FALSE);
 		connected = FALSE;
+		/* set the status */
+		fun_update_status (_("The frugalware update notifier daemon is not running. Update checking is disabled"));
 		/* start the connection retry timeout */
 		g_timeout_add_seconds (30, (GSourceFunc)fun_timeout_conn, NULL);
 		return;
@@ -422,6 +427,8 @@ fun_ui_init (void)
 
 	/* register the timeout */
 	g_timeout_add_seconds (seconds, (GSourceFunc)fun_timeout_func, NULL);
+	/* set the status */
+	fun_update_status (_("Idle"));
 
 	return;
 }
@@ -455,6 +462,8 @@ fun_timeout_func (void)
 	if (!connected)
 		return TRUE;
 
+	/* set the status to let the user know that fun is checking for an update */
+	fun_update_status (_("Checking for new updates"));
 	/* if updates are available, popup a notification to notify the user 
 	 * and also populate the updates list in main window. BUT, before that
 	 * disable the "check" button so that the user doesn't interrupt the 
@@ -475,6 +484,8 @@ fun_timeout_func (void)
 
 	/* re-enable the "check" button now */
 	gtk_widget_set_sensitive (fun_check_btn, TRUE);
+	/* and the status back to Idle */
+	fun_update_status (_("Idle"));
 
 	return TRUE;
 }
@@ -559,3 +570,15 @@ fun_main_window_hide (void)
 	return;
 }
 
+static void
+fun_update_status (const char *message)
+{
+	guint ci;
+	
+	if (!message)
+		return;
+	ci = gtk_statusbar_get_context_id (GTK_STATUSBAR(fun_statusbar), "-");
+	gtk_statusbar_push (GTK_STATUSBAR(fun_statusbar), ci, message);
+	
+	return;
+}
