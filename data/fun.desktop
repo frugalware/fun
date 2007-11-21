@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Frugalware Update Notifier (FUN)
+Comment=Frugalware Update Notifier
+Exec=fun
+Terminal=false
+Type=Application
+StartupNotify=true
+Icon=fun
+Categories=Application;GTK;KDE;Settings;X-GNOME-SystemSettings;
+MimeType=
