@@ -58,6 +58,7 @@ static GdkPixbuf		*fun_about_pixbuf = NULL;
 static GtkWidget		*fun_config_dlg = NULL;
 static GtkWidget		*fun_config_gfpm_launcher_combo = NULL;
 static GtkAdjustment 	*fun_config_upd_int_adj = NULL;
+static GtkAdjustment 	*fun_config_not_tim_adj = NULL;
 static gboolean			connected = FALSE;
 
 /* credits */
@@ -77,6 +78,7 @@ static const gchar translators[] = "";
 
 static gboolean fun_timeout_func (void);
 static gboolean fun_timeout_conn (void);
+static gboolean fun_timeout_notification (void);
 
 static void fun_config_dialog_show (void);
 static void fun_restart (void);
@@ -257,8 +259,9 @@ cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data)
 	GtkAdjustment 	*adj = NULL;
 	guint			interval = 0;
 	guint			old_interval = 0;
-	gint			sel = -1;
+	gint			sel = 0;
 	
+	/* gfpm_launcher setting */
 	switch (gtk_combo_box_get_active(GTK_COMBO_BOX(fun_config_gfpm_launcher_combo)))
 	{
 		case 0:	/* gksu */
@@ -273,8 +276,13 @@ cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data)
 		default:
 				break;
 	}
+	
+	/* notification_timeout setting */
+	sel = gtk_adjustment_get_value (fun_config_not_tim_adj);
+	fun_config_set_value_int ("notification_timeout", sel);
 	fun_config_save ();
 	
+	/* update_interval setting */
 	adj = gtk_spin_button_get_adjustment (GTK_SPIN_BUTTON(data));
 	interval = gtk_adjustment_get_value (adj);
 	old_interval = fun_config_get_value_int ("update_interval");
@@ -331,6 +339,7 @@ fun_config_dialog_show (void)
 	if (!GTK_WIDGET_VISIBLE(fun_config_dlg))
 	{
 		gtk_adjustment_set_value (fun_config_upd_int_adj, fun_config_get_value_int("update_interval"));
+		gtk_adjustment_set_value (fun_config_not_tim_adj, fun_config_get_value_int("notification_timeout"));
 		char *gfpm_launcher = fun_config_get_value_string("gfpm_launcher");
 		if (!(strcmp(gfpm_launcher, "sudo")))
 			gtk_combo_box_set_active (GTK_COMBO_BOX(fun_config_gfpm_launcher_combo), 2);
@@ -359,6 +368,7 @@ fun_config_dialog_init (void)
 	fun_config_dlg = glade_xml_get_widget (xml, "fun_config_dlg");
 	fun_config_gfpm_launcher_combo = glade_xml_get_widget (xml, "fun_config_su");
 	fun_config_upd_int_adj = gtk_spin_button_get_adjustment (glade_xml_get_widget(xml,"interval_spbtn"));
+	fun_config_not_tim_adj = gtk_spin_button_get_adjustment (glade_xml_get_widget(xml,"notification_time_spbtn"));
 	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"pref_closebtn")),
 					"clicked",
 					G_CALLBACK(cb_fun_config_dlg_close_clicked),
@@ -536,6 +546,10 @@ fun_timeout_func (void)
 		fun_tooltip_set_text2 (tooltip, _("Click here to know more.."), TRUE);
 		fun_tooltip_show (tooltip);
 		cb_fun_systray_enter_notify (NULL, NULL, NULL);
+		/* display the notification popup for notification_timeout seconds */
+		/* we do this by registering a timeout for x seconds which will simply hide the
+		 * tooltip when fired and destroy itself */
+		g_timeout_add_seconds (fun_config_get_value_int("notification_timeout"), (GSourceFunc)fun_timeout_notification, NULL);
 		/* populate the update list */
 		fun_populate_updates_tvw (plist);
 	}
@@ -548,6 +562,14 @@ fun_timeout_func (void)
 	fun_update_status (_("Idle"));
 
 	return TRUE;
+}
+
+static gboolean
+fun_timeout_notification (void)
+{
+	cb_fun_systray_leave_notify (NULL, NULL, NULL);
+	
+	return FALSE;
 }
 
 static void
