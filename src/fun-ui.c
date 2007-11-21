@@ -55,6 +55,7 @@ static GtkWidget		*fun_updates_tvw = NULL;
 static GtkWidget		*fun_check_btn = NULL;
 static GdkPixbuf		*fun_about_pixbuf = NULL;
 static GtkWidget		*fun_config_dlg = NULL;
+static GtkWidget		*fun_config_gfpm_launcher_combo = NULL;
 static GtkAdjustment 	*fun_config_upd_int_adj = NULL;
 static gboolean			connected = FALSE;
 
@@ -195,6 +196,7 @@ cb_fun_systray_icon_clicked (GtkWidget *widget, GdkEventButton *event, gpointer 
 	/* Left Click */
 	if (event->button == 1)
 	{
+		/* Toggle window visibility */
 		if (!GTK_WIDGET_VISIBLE(fun_main_window))
 			gtk_widget_show (GTK_WIDGET(fun_main_window));
 		else
@@ -309,6 +311,17 @@ fun_config_dialog_show (void)
 	if (!GTK_WIDGET_VISIBLE(fun_config_dlg))
 	{
 		gtk_adjustment_set_value (fun_config_upd_int_adj, fun_config_get_value_int("update_interval"));
+		char *gfpm_launcher = fun_config_get_value_string("gfpm_launcher");
+		if (!(strcmp(gfpm_launcher, "sudo")))
+			gtk_combo_box_set_active (GTK_COMBO_BOX(fun_config_gfpm_launcher_combo), 2);
+		else
+		if (!(strcmp(gfpm_launcher, "gksu")))
+			gtk_combo_box_set_active (GTK_COMBO_BOX(fun_config_gfpm_launcher_combo), 0);
+		else
+		if (!(strcmp(gfpm_launcher, "kdesu")))
+			gtk_combo_box_set_active (GTK_COMBO_BOX(fun_config_gfpm_launcher_combo), 1);
+		else
+			gtk_combo_box_set_active (GTK_COMBO_BOX(fun_config_gfpm_launcher_combo), -1);
 		gtk_widget_show (fun_config_dlg);
 		gtk_window_present (GTK_WINDOW(fun_config_dlg));
 	}
@@ -324,6 +337,7 @@ static void
 fun_config_dialog_init (void)
 {
 	fun_config_dlg = glade_xml_get_widget (xml, "fun_config_dlg");
+	fun_config_gfpm_launcher_combo = glade_xml_get_widget (xml, "fun_config_su");
 	fun_config_upd_int_adj = gtk_spin_button_get_adjustment (glade_xml_get_widget(xml,"interval_spbtn"));
 	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"pref_closebtn")),
 					"clicked",

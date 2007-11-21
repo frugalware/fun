@@ -37,6 +37,7 @@ fun_config_init (void)
 
 	cfg_init_config_file_struct (&conf);
 	cfg_add_key (&conf, "update_interval", "60");
+	cfg_add_key (&conf, "gfpm_launcher", "sudo");
 	rcfile = cfg_get_path_to_config_file (CONFIG_FILE);
 	if (cfg_read_config_file (&conf, rcfile) != 0)
 	{
