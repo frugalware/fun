@@ -38,8 +38,8 @@ Configuring FUN
 ===============
 FUN stores it's configuration in /home/user/.funrc file. Although you
 can configure the various options directly from within FUN, you may even
-edit the .funrc file manually. Currently, fun supports the following two
-configuration options:
+edit the .funrc file manually. Currently, fun supports the following
+three configuration options:
 
 1)	update_interval
 
@@ -48,7 +48,13 @@ configuration options:
 	For eg: If you want FUN to check for new updates every hour, you
 	should set update_interval=60 in the configuration file.
 
-2)	gfpm_launcher
+2)	notification_timeout
+
+	This specifies the number of seconds for which the notification
+	tooltip (bubble) will be displayed once an update is available.
+	The range is 1 to 30 seconds.
+
+3)	gfpm_launcher
 
 	FUN doesn't have any inherent capability of updating your system
 	once new packages are available. Once the user is notified of new
