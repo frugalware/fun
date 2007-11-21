@@ -318,66 +318,12 @@ fun_config_dialog_show (void)
 static void
 fun_config_dialog_init (void)
 {
-	GtkWidget *vbox1;
-	GtkWidget *hbox2;
-	GtkWidget *image1;
-	GtkWidget *label2;
-	GtkWidget *hbox1;
-	GtkWidget *label1;
-	GtkObject *spinbutton1_adj;
-	GtkWidget *spinbutton1;
-	GtkWidget *hbuttonbox1;
-	GtkWidget *pref_close;
-	
-	fun_config_dlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_default_size (GTK_WINDOW(fun_config_dlg), 350, 150);
-	//gtk_window_set_resizable (fun_config_dlg, FALSE);
-	
-	vbox1 = gtk_vbox_new (FALSE, 5);
-	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (fun_config_dlg), vbox1);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 6);
-
-	hbox2 = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox2);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox2, FALSE, TRUE, 5);
-
-	image1 = gtk_image_new_from_file ("/usr/share/fun/fun.png");
-	gtk_widget_show (image1);
-	gtk_box_pack_start (GTK_BOX (hbox2), image1, FALSE, TRUE, 0);
-	gtk_misc_set_alignment (GTK_MISC (image1), 0, 0);
-
-	label2 = gtk_label_new (_("<b>Configure Frugalware Update Nofitier</b>"));
-	gtk_widget_show (label2);
-	gtk_box_pack_start (GTK_BOX (hbox2), label2, TRUE, TRUE, 0);
-	gtk_label_set_use_markup (GTK_LABEL (label2), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label2), 0.05, 0.5);
-
-	hbox1 = gtk_hbox_new (FALSE, 5);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, TRUE, TRUE, 0);
-
-	label1 = gtk_label_new (_("<b>Update Interval (minutes) :</b>"));
-	gtk_widget_show (label1);
-	gtk_box_pack_start (GTK_BOX (hbox1), label1, TRUE, TRUE, 0);
-	gtk_label_set_use_markup (GTK_LABEL (label1), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label1), 0, 0.5);
-
-	fun_config_upd_int_adj = gtk_adjustment_new (1, 1, 60, 1, 10, 10);
-	spinbutton1 = gtk_spin_button_new (GTK_ADJUSTMENT (fun_config_upd_int_adj), 1, 0);
-	gtk_widget_show (spinbutton1);
-	gtk_box_pack_start (GTK_BOX (hbox1), spinbutton1, FALSE, TRUE, 0);
-
-	hbuttonbox1 = gtk_hbutton_box_new ();
-	gtk_widget_show (hbuttonbox1);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbuttonbox1, FALSE, TRUE, 0);
-	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox1), GTK_BUTTONBOX_END);
-
-	pref_close = gtk_button_new_from_stock ("gtk-close");
-	gtk_widget_show (pref_close);
-	gtk_container_add (GTK_CONTAINER (hbuttonbox1), pref_close);
-	GTK_WIDGET_SET_FLAGS (pref_close, GTK_CAN_DEFAULT);
-	g_signal_connect (G_OBJECT(pref_close), "clicked", G_CALLBACK(cb_fun_config_dlg_close_clicked), (gpointer)spinbutton1);
+	fun_config_dlg = glade_xml_get_widget (xml, "fun_config_dlg");
+	fun_config_upd_int_adj = gtk_spin_button_get_adjustment (glade_xml_get_widget(xml,"interval_spbtn"));
+	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"pref_closebtn")),
+					"clicked",
+					G_CALLBACK(cb_fun_config_dlg_close_clicked),
+					(gpointer)glade_xml_get_widget(xml,"interval_spbtn"));
 	
 	return;
 }
