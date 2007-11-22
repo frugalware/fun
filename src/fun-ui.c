@@ -479,6 +479,7 @@ fun_ui_init (void)
 {
 	GError		*error = NULL;
 	gulong		seconds = 0;
+	gchar		*plist = NULL;
 	static gchar *error_msg = ("Update checking has been disabled because FUN has detected "
 								"that the update notifier daemon is not running. FUN will attempt "
 								"to reconnect to the daemon every 45 seconds. \n\nYou can start the "
@@ -504,6 +505,12 @@ fun_ui_init (void)
 	}
 	seconds = fun_config_get_value_int ("update_interval") * 60;
 	connected = TRUE;
+	/* perform the first-run */
+	/* we do this because when a database update is done for the first time 
+	 * it takes a reasonable amount of time and the client may fail to get 
+	 * any update status from the daemon */
+	while (gtk_events_pending()) gtk_main_iteration ();
+	fun_dbus_perform_service (PERFORM_UPDATE, NULL, &plist, NULL);
 
 	/* register the timeout */
 	g_timeout_add_seconds (seconds, (GSourceFunc)fun_timeout_func, NULL);

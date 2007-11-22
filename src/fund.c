@@ -161,7 +161,8 @@ gboolean fund_update_database(FWUpdateNotifier *obj, gchar **packages, GError **
 			tmp = g_string_append (tmp, list->data);
 			tmp = g_string_append (tmp, " ");
 		}
-		*packages = g_strdup (tmp->str);
+		if (packages != NULL)
+			*packages = g_strdup (tmp->str);
 		return TRUE;
 	}
 }
