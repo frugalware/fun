@@ -27,7 +27,6 @@
 #include <string.h>
 #include <glib.h>
 #include <dbus/dbus-glib-bindings.h>
-#include <libfwutil.h>
 #include <dirent.h>
 #include <config.h>
 #include <syslog.h>
