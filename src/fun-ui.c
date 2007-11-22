@@ -328,6 +328,7 @@ fun_ui_cleanup (void)
 		return;
 	gtk_widget_destroy (GTK_WIDGET(icon));
 	gtk_widget_destroy (GTK_WIDGET(fun_config_dlg));
+	gtk_widget_destroy (GTK_WIDGET(fun_main_window));
 	fun_tooltip_destroy (tooltip);
 	icon = NULL;
 	tooltip = NULL;
