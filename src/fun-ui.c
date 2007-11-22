@@ -483,7 +483,7 @@ fun_ui_init (void)
 								"that the update notifier daemon is not running. FUN will attempt "
 								"to reconnect to the daemon every 45 seconds. \n\nYou can start the "
 								"update notifier daemon by running the following command as root: \n\n"
-								"'service fund start'");
+								"'service fun start'");
 	
 	fun_systray_create ();
 	fun_main_window_init ();

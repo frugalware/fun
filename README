@@ -26,7 +26,7 @@ Requirements
 Using FUN
 =========
 You need to start the daemon by running the following command as root:
-# service fund start
+# service fun start
 
 Once the daemon is started, you may launch the client by running the
 following command:
