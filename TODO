@@ -5,5 +5,7 @@
 * fun: implement a mechanism that automatically sets the timeout value
   to the updated interval value as specified by the user without
   requiring to restart fun
+* allow an option to start the fun daemon from fun itself (requires root
+  previleges ofcourse) [crazy's idea]
 
-  last updated by Priyank: 2007 11 04 13:11
+  last updated by Priyank: 2007 11 23 21:40 IST
