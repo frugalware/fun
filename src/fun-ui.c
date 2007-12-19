@@ -555,9 +555,16 @@ fun_populate_updates_tvw (gchar *plist)
 	{
 		gchar *ver = NULL;
 		gchar *desc = NULL;
-		fun_dbus_perform_service (GET_PACKAGE_INFO, l->data, &ver, &desc);
-		gtk_list_store_append (store, &iter);
-		gtk_list_store_set (store, &iter, 0, icon, 1, l->data, 2, ver, 3, desc, -1);
+		if (fun_dbus_perform_service (GET_PACKAGE_INFO, l->data, &ver, &desc))
+		{
+			gtk_list_store_append (store, &iter);
+			gtk_list_store_set (store, &iter, 0, icon, 1, l->data, 2, ver, 3, desc, -1);
+		}
+		else
+		{
+			fun_error (_("Error getting update information"), _("There was an error getting update information"));
+			break;
+		}
 	}
 	g_object_unref (icon);
 	
