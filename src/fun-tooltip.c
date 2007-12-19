@@ -21,13 +21,15 @@
  */
 
 #include <gtk/gtk.h>
+#include <libnotify/notification.h>
+#include <libnotify/notify.h>
 #include "fun-config.h"
 #include "fun-tooltip.h"
 
-NotifyNotification *fun_tooltip_new (GtkStatusIcon *icon)
+static NotifyNotification *tooltip = NULL;
+
+void fun_tooltip_new (GtkStatusIcon *icon)
 {
-	NotifyNotification	*tooltip = NULL;
-	
 	tooltip = notify_notification_new ("Frugalware Update Notifier",
 										NULL,
 										"fun",
@@ -36,11 +38,11 @@ NotifyNotification *fun_tooltip_new (GtkStatusIcon *icon)
 	notify_notification_set_timeout (tooltip, (fun_config_get_value_int("notification_timeout")*1000));
 	notify_notification_set_urgency (tooltip, NOTIFY_URGENCY_NORMAL);
 	notify_notification_attach_to_status_icon (tooltip, icon);
-
-	return tooltip;
+	
+	return;
 }
 
-void fun_tooltip_set_text (NotifyNotification *tooltip, const gchar *summary, const gchar *body)
+void fun_tooltip_set_text (const gchar *summary, const gchar *body)
 {
 	if (tooltip)
 		notify_notification_update (tooltip, summary, body, "fun");
@@ -48,7 +50,14 @@ void fun_tooltip_set_text (NotifyNotification *tooltip, const gchar *summary, co
 	return;
 }
 
-void fun_tooltip_show (GtkStatusIcon *icon, NotifyNotification *tooltip)
+void fun_tooltip_set_notification_timeout (guint timeout)
+{
+	notify_notification_set_timeout (tooltip, timeout*1000);
+	
+	return;
+}
+
+void fun_tooltip_show (GtkStatusIcon *icon)
 {
 	if (tooltip)
 	{
@@ -63,7 +72,7 @@ void fun_tooltip_show (GtkStatusIcon *icon, NotifyNotification *tooltip)
 	return;
 }
 
-void fun_tooltip_destroy (NotifyNotification *tooltip)
+void fun_tooltip_destroy (void)
 {
 	g_object_unref (tooltip);
 	notify_uninit ();
@@ -71,4 +80,3 @@ void fun_tooltip_destroy (NotifyNotification *tooltip)
 
 	return;
 }
-

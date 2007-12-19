@@ -38,13 +38,9 @@ static void fun_main_window_hide (void);
 static void fun_launch_gfpm (void);
 static void fun_populate_updates_tvw (gchar *plist);
 
-#define FUN_ICON  			"fun.png"
-#define FUN_TOOLTIP_ICON 	"fun.png"
-
 extern GladeXML *xml;
 
-static GtkStatusIcon		*icon = NULL;
-static NotifyNotification	*tooltip = NULL;
+static GtkStatusIcon	*icon = NULL;
 
 static GtkWidget		*fun_about_dlg = NULL;
 static GtkWidget		*fun_main_window = NULL;
@@ -110,8 +106,8 @@ fun_systray_create (void)
 	icon = gtk_status_icon_new_from_icon_name ("fun");
 	
 	/* set the default tooltip */
-	tooltip = fun_tooltip_new (icon);
-	fun_tooltip_set_text (tooltip, "Frugalware Update Notifier", NULL);
+	fun_tooltip_new (icon);
+	fun_tooltip_set_text ("Frugalware Update Notifier", NULL);
 	
 	g_signal_connect (icon, "activate", G_CALLBACK (fun_main_window_show), NULL);
 	g_signal_connect (icon, "popup-menu", G_CALLBACK (cb_fun_systray_icon_clicked), NULL);
@@ -231,9 +227,8 @@ fun_ui_cleanup (void)
 	g_object_unref (icon);
 	gtk_widget_destroy (GTK_WIDGET(fun_config_dlg));
 	gtk_widget_destroy (GTK_WIDGET(fun_main_window));
-	fun_tooltip_destroy (tooltip);
+	fun_tooltip_destroy ();
 	icon = NULL;
-	tooltip = NULL;
 	
 	return;
 }
@@ -468,9 +463,9 @@ fun_timeout_func (void)
 	if (fun_dbus_perform_service (PERFORM_UPDATE, NULL, &plist, NULL)==TRUE)
 	{
 		//g_print ("\nlist is\n %s", plist);
-		fun_tooltip_set_text (tooltip, _("Updates are available"), _("Yeah updates are available"));
+		fun_tooltip_set_text (_("Updates are available"), _("Yeah updates are available"));
 		//fun_tooltip_set_text2 (tooltip, _("Click here to know more.."), TRUE);
-		fun_tooltip_show (icon, tooltip);
+		fun_tooltip_show (icon);
 		/* display the notification popup for notification_timeout seconds */
 		/* we do this by registering a timeout for x seconds which will simply hide the
 		 * tooltip when fired and destroy itself */
