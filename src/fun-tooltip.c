@@ -21,6 +21,7 @@
  */
 
 #include <gtk/gtk.h>
+#include "fun-config.h"
 #include "fun-tooltip.h"
 
 NotifyNotification *fun_tooltip_new (GtkStatusIcon *icon)
@@ -32,7 +33,7 @@ NotifyNotification *fun_tooltip_new (GtkStatusIcon *icon)
 										"fun",
 										NULL);
 	notify_notification_set_category (tooltip, "information");
-	notify_notification_set_timeout (tooltip, NOTIFY_EXPIRES_DEFAULT);
+	notify_notification_set_timeout (tooltip, (fun_config_get_value_int("notification_timeout")*1000));
 	notify_notification_set_urgency (tooltip, NOTIFY_URGENCY_NORMAL);
 	notify_notification_attach_to_status_icon (tooltip, icon);
 
