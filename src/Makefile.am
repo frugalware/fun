@@ -9,8 +9,6 @@ bin_PROGRAMS = fun
 fund_SOURCES = fund.c
 fun_SOURCES	= wejpconfig.c \
 			  fun-config.c \
-			  eggtrayicon.c	\
-			  sexy-tooltip.c \
 			  fun-tooltip.c \
 			  fun-messages.c \
 			  fun-ui.c \

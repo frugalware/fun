@@ -2,37 +2,22 @@
 #define _FUN_TOOLTIP_H
 
 #include <gtk/gtk.h>
-
-/* FunTooltip structure */
-typedef struct {
-	GtkWidget *window;
-	GtkWidget *hbox;
-	GtkWidget *vbox;
-	GtkWidget *icon;
-} FunTooltip;
+#include <libnotify/notification.h>
+#include <libnotify/notify.h>
 
 /* Fun Tooltip Functions */
 
 /* Create a new tooltip */
-FunTooltip *fun_tooltip_new (void);
+NotifyNotification *fun_tooltip_new (GtkStatusIcon *icon);
 
 /* Sets the tooltip text (label1) */
-void fun_tooltip_set_text1 (FunTooltip *tooltip, const gchar *text, gboolean formatting);
-
-/* Sets the tooltip text (label2) */
-void fun_tooltip_set_text2 (FunTooltip *tooltip, const gchar *text, gboolean formatting);
-
-/* Sets the icon for the tooltip */
-void fun_tooltip_set_icon (FunTooltip *tooltip, GdkPixbuf *pixbuf);
+void fun_tooltip_set_text (NotifyNotification *tooltip, const gchar *summary, const gchar *body);
 
 /* Show the tooltip */
-void fun_tooltip_show (FunTooltip *tooltip);
-
-/* Hide the tooltip */
-void fun_tooltip_hide (FunTooltip *tooltip);
+void fun_tooltip_show (GtkStatusIcon *icon, NotifyNotification *tooltip);
 
 /* Destroy the tooltip object and free the memory */
-void fun_tooltip_destroy (FunTooltip *tooltip);
+void fun_tooltip_destroy (NotifyNotification *tooltip);
 
 #endif
 

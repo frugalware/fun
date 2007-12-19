@@ -25,8 +25,6 @@
 #include "fun-messages.h"
 #include "fun-tooltip.h"
 #include "fun-dbus.h"
-#include "sexy-tooltip.h"
-#include "eggtrayicon.h"
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -35,6 +33,7 @@
 static void fun_about_show (void);
 static void fun_about_hide (void);
 static void fun_main_window_init (void);
+static void fun_main_window_show (void);
 static void fun_main_window_hide (void);
 static void fun_launch_gfpm (void);
 static void fun_populate_updates_tvw (gchar *plist);
@@ -44,11 +43,9 @@ static void fun_populate_updates_tvw (gchar *plist);
 
 extern GladeXML *xml;
 
-EggTrayIcon	*icon = NULL;
-FunTooltip	*tooltip = NULL;
-GtkWidget	*stooltip;
+static GtkStatusIcon		*icon = NULL;
+static NotifyNotification	*tooltip = NULL;
 
-static GtkStatusIcon	*fun_icon = NULL;
 static GtkWidget		*fun_about_dlg = NULL;
 static GtkWidget		*fun_main_window = NULL;
 static GtkWidget		*fun_statusbar = NULL;
@@ -103,125 +100,30 @@ static void fun_restart (void);
 static GdkPixbuf * fun_get_icon (const char *icon, int size);
 static void fun_update_status (const char *message);
 
-static gboolean	cb_fun_systray_icon_clicked (GtkWidget *widget, GdkEventButton *event, gpointer data);
-static gboolean cb_fun_systray_enter_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer data);
-static gboolean cb_fun_systray_leave_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer data);
+static gboolean	cb_fun_systray_icon_clicked (GtkStatusIcon *widget, guint button, guint activate_time, gpointer data);
 static void cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data);
 
 void
 fun_systray_create (void)
 {
-	gchar 		*icon_file;
-	GdkPixbuf	*icon_image;
-	GdkPixbuf	*icon_tooltip;
-	GtkWidget	*systray_icon;
-	GdkColor 	color;
-
 	/* create the tray icon */
-	icon = egg_tray_icon_new ("Frugalware Update Notifier");
-	icon_image = fun_get_icon ("fun", 24);
-	systray_icon = gtk_image_new_from_pixbuf (icon_image);
-	gtk_container_add (GTK_CONTAINER (icon), systray_icon);
-	g_object_unref (icon_image);
-	
-	stooltip = sexy_tooltip_new ();
-	gdk_color_parse ("white", &color);
-	gtk_widget_modify_bg (GTK_WIDGET(stooltip), GTK_STATE_NORMAL, &color);
+	icon = gtk_status_icon_new_from_icon_name ("fun");
 	
 	/* set the default tooltip */
-	tooltip = fun_tooltip_new ();
-	fun_tooltip_set_text1 (tooltip, "Frugalware Update Notifier", TRUE);
-	icon_tooltip = fun_get_icon ("fun", 32);
-	fun_tooltip_set_icon (tooltip, icon_tooltip);
-	g_object_unref (icon_tooltip);
+	tooltip = fun_tooltip_new (icon);
+	fun_tooltip_set_text (tooltip, "Frugalware Update Notifier", NULL);
 	
-	g_signal_connect (icon, "button-press-event", G_CALLBACK (cb_fun_systray_icon_clicked), NULL);
-	g_signal_connect (icon, "enter-notify-event", G_CALLBACK(cb_fun_systray_enter_notify), NULL);
-	g_signal_connect (icon, "leave-notify-event", G_CALLBACK(cb_fun_systray_leave_notify), NULL);
-	gtk_widget_show (GTK_WIDGET(systray_icon));
-	gtk_widget_show (GTK_WIDGET(icon));
-	
-	gtk_widget_ref (tooltip->hbox);
-	gtk_container_remove (GTK_CONTAINER(tooltip->window), tooltip->hbox);
-	gtk_container_add (GTK_CONTAINER(stooltip), tooltip->hbox);
-	gtk_widget_unref (tooltip->hbox);
-	
+	g_signal_connect (icon, "activate", G_CALLBACK (fun_main_window_show), NULL);
+	g_signal_connect (icon, "popup-menu", G_CALLBACK (cb_fun_systray_icon_clicked), NULL);
+
 	return;
 }
 
 static gboolean
-cb_fun_systray_enter_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer data)
+cb_fun_systray_icon_clicked (GtkStatusIcon *widget, guint button, guint activate_time, gpointer data)
 {
-	GdkScreen *screen = NULL;
-	GdkScreen *def_screen = NULL;
-	GdkRectangle rectangle;
-	gint x, y;
-	gint w, h;
-	gint top;
-	
-	/* Check where to place our tooltip */
-	def_screen = gdk_screen_get_default ();
-	w = gdk_screen_get_width (def_screen);
-	h = gdk_screen_get_height (def_screen);
-	/* Get the location of the system tray icon */
-	gdk_window_get_origin ((GTK_WIDGET(icon)->window), &x, &y);
-	if (h-y >= 100)
-		top = 1; /* tooltip should be placed on top */
-	else
-		top = 0; /* tooltip should be placed on bottom */
-	w = h = 0;
-	
-	/* Move the tooltip off-screen to calculate the exact co-ordinates */
-	rectangle.x = 2500;
-	rectangle.y = 2500;
-	rectangle.width = 100;
-	rectangle.height = 70;
-	screen = gtk_widget_get_screen (GTK_WIDGET(icon));
-	sexy_tooltip_position_to_rect (SEXY_TOOLTIP(stooltip), &rectangle, screen);
-	gtk_widget_show_all (stooltip);
-	gtk_window_get_size (GTK_WINDOW(stooltip), &w, &h);
-	
-	/* Good, now lets move it back to where it should be */
-	if (top == 1)
-	{	
-		rectangle.x = x-(w/4);
-		rectangle.y = y-25;
-	}
-	else
-	{
-		rectangle.x = x-(w/4);
-		rectangle.y = y-130;
-	}
-
-	sexy_tooltip_position_to_rect (SEXY_TOOLTIP(stooltip), &rectangle, screen);
-
-	return TRUE;
-}
-
-static gboolean
-cb_fun_systray_leave_notify (GtkWidget *widget, GdkEventCrossing *event, gpointer data)
-{
-	fun_tooltip_hide (tooltip);
-	gtk_widget_hide (stooltip);
-	
-	return TRUE;
-}
-
-static gboolean
-cb_fun_systray_icon_clicked (GtkWidget *widget, GdkEventButton *event, gpointer data)
-{
-	/* Left Click */
-	if (event->button == 1)
-	{
-		/* Toggle window visibility */
-		if (!GTK_WIDGET_VISIBLE(fun_main_window))
-			gtk_widget_show (GTK_WIDGET(fun_main_window));
-		else
-			fun_main_window_hide ();
-		return TRUE;
-	}
 	/* Right Click */
-	if (event->button == 3)
+	if (button == 3)
 	{
 		GtkWidget	*menu = NULL;
 		GtkWidget	*menu_item = NULL;
@@ -326,7 +228,7 @@ fun_ui_cleanup (void)
 {
 	if (icon == NULL)
 		return;
-	gtk_widget_destroy (GTK_WIDGET(icon));
+	g_object_unref (icon);
 	gtk_widget_destroy (GTK_WIDGET(fun_config_dlg));
 	gtk_widget_destroy (GTK_WIDGET(fun_main_window));
 	fun_tooltip_destroy (tooltip);
@@ -486,7 +388,7 @@ fun_ui_init (void)
 								"to reconnect to the daemon every 45 seconds. \n\nYou can start the "
 								"update notifier daemon by running the following command as root: \n\n"
 								"'service fun start'");
-	
+	notify_init ("fun");
 	fun_systray_create ();
 	fun_main_window_init ();
 	fun_config_dialog_init ();
@@ -494,7 +396,7 @@ fun_ui_init (void)
 	if (fun_dbus_perform_service (TEST_SERVICE, NULL, NULL, NULL) == FALSE)
 	{
 		g_print (_("Failed to connect to the fun daemon\n"));
-		fun_tooltip_set_text2 (tooltip, _("Not connected to fun daemon"), FALSE);
+		//fun_tooltip_set_text2 (tooltip, _("Not connected to fun daemon"), FALSE);
 		connected = FALSE;
 		/* set the status */
 		fun_update_status (_("The frugalware update notifier daemon is not running. Update checking is disabled"));
@@ -534,7 +436,7 @@ fun_timeout_conn (void)
 	{
 		connected = TRUE;
 		g_timeout_add_seconds (20, (GSourceFunc)fun_timeout_func, NULL);
-		fun_tooltip_set_text2 (tooltip, "", FALSE);
+		//fun_tooltip_set_text2 (tooltip, "", FALSE);
 		/* set the status to Idle */
 		fun_update_status (_("Idle"));
 		return FALSE;
@@ -566,10 +468,9 @@ fun_timeout_func (void)
 	if (fun_dbus_perform_service (PERFORM_UPDATE, NULL, &plist, NULL)==TRUE)
 	{
 		//g_print ("\nlist is\n %s", plist);
-		fun_tooltip_set_text1 (tooltip, _("Updates are available"), TRUE);
-		fun_tooltip_set_text2 (tooltip, _("Click here to know more.."), TRUE);
-		fun_tooltip_show (tooltip);
-		cb_fun_systray_enter_notify (NULL, NULL, NULL);
+		fun_tooltip_set_text (tooltip, _("Updates are available"), _("Yeah updates are available"));
+		//fun_tooltip_set_text2 (tooltip, _("Click here to know more.."), TRUE);
+		fun_tooltip_show (icon, tooltip);
 		/* display the notification popup for notification_timeout seconds */
 		/* we do this by registering a timeout for x seconds which will simply hide the
 		 * tooltip when fired and destroy itself */
@@ -589,7 +490,7 @@ fun_timeout_func (void)
 static gboolean
 fun_timeout_notification (void)
 {
-	cb_fun_systray_leave_notify (NULL, NULL, NULL);
+	//cb_fun_systray_leave_notify (NULL, NULL, NULL);
 	
 	return FALSE;
 }
@@ -675,6 +576,18 @@ static void
 fun_main_window_hide (void)
 {
 	gtk_widget_hide (fun_main_window);
+
+	return;
+}
+
+static void
+fun_main_window_show (void)
+{
+	/* Toggle window visibility */
+	if (!GTK_WIDGET_VISIBLE(fun_main_window))
+		gtk_widget_show (GTK_WIDGET(fun_main_window));
+	else
+		fun_main_window_hide ();
 
 	return;
 }

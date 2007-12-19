@@ -21,145 +21,50 @@
  */
 
 #include <gtk/gtk.h>
-#include <stdio.h>
 #include "fun-tooltip.h"
 
-FunTooltip *fun_tooltip_new (void)
+NotifyNotification *fun_tooltip_new (GtkStatusIcon *icon)
 {
-	FunTooltip	*tooltip;
-	GtkWidget	*label1;
-	GtkWidget	*label2;
+	NotifyNotification	*tooltip = NULL;
 	
-	/* main tooltip window */
-	tooltip = g_malloc (sizeof(FunTooltip));
-	tooltip->window = gtk_window_new (GTK_WINDOW_POPUP);
-	
-	gtk_window_set_resizable (GTK_WINDOW(tooltip->window), FALSE);
-	gtk_window_set_decorated (GTK_WINDOW(tooltip->window), FALSE);
-	gtk_window_set_skip_taskbar_hint (GTK_WINDOW(tooltip->window), TRUE);
-	gtk_window_set_skip_pager_hint (GTK_WINDOW(tooltip->window), TRUE);
-
-	/* the two main layout boxes */
-	tooltip->hbox = gtk_hbox_new (FALSE, 4);
-	tooltip->vbox = gtk_vbox_new (FALSE, 0);
-	
-	/* pack the boxes */
-	gtk_container_add (GTK_CONTAINER(tooltip->window), tooltip->hbox);
-	gtk_box_pack_end (GTK_BOX(tooltip->hbox), tooltip->vbox, FALSE, FALSE, 2);
-	
-	/* tooltip icon */
-	tooltip->icon = gtk_image_new_from_pixbuf (NULL);
-	gtk_misc_set_padding (GTK_MISC(tooltip->icon), 4, 4);
-	gtk_box_pack_start (GTK_BOX(tooltip->hbox), tooltip->icon, TRUE, TRUE, 0);
-
-	/* labels */
-	label1 = gtk_label_new (NULL);
-	g_object_set (G_OBJECT(label1), "use-markup", TRUE, NULL);
-	gtk_box_pack_start (GTK_BOX(tooltip->vbox), label1, TRUE, FALSE, 1);
-	gtk_misc_set_alignment (GTK_MISC(label1), 0, 0);
-	label2 = gtk_label_new (NULL);
-	g_object_set (G_OBJECT(label2), "use-markup", TRUE, NULL);
-	gtk_box_pack_start (GTK_BOX(tooltip->vbox), label2, TRUE, FALSE, 1);
-	gtk_misc_set_alignment (GTK_MISC(label2), 0, 0);
+	tooltip = notify_notification_new ("Frugalware Update Notifier",
+										NULL,
+										"fun",
+										NULL);
+	notify_notification_set_category (tooltip, "information");
+	notify_notification_set_timeout (tooltip, NOTIFY_EXPIRES_DEFAULT);
+	notify_notification_set_urgency (tooltip, NOTIFY_URGENCY_NORMAL);
+	notify_notification_attach_to_status_icon (tooltip, icon);
 
 	return tooltip;
 }
 
-void fun_tooltip_set_text1 (FunTooltip *tooltip, const gchar *text, gboolean formatting)
+void fun_tooltip_set_text (NotifyNotification *tooltip, const gchar *summary, const gchar *body)
 {
-	GList *list;
-	gchar *markup;
+	if (tooltip)
+		notify_notification_update (tooltip, summary, body, "fun");
 
-	if ( (list = gtk_container_get_children (GTK_CONTAINER(tooltip->vbox))) != NULL )
+	return;
+}
+
+void fun_tooltip_show (GtkStatusIcon *icon, NotifyNotification *tooltip)
+{
+	if (tooltip)
 	{
-		if (text == NULL)
-		{
-			gtk_label_set_text (GTK_LABEL(list->data), NULL);
-			gtk_widget_hide (GTK_WIDGET(list->data));
-			return;
-		}
+		GdkScreen *screen = NULL;
+		GdkRectangle area;
 		
-		if (formatting == TRUE)
-		{
-			markup = g_markup_printf_escaped ("<span size=\"large\" weight=\"bold\">%s</span>", text);
-			gtk_label_set_markup (GTK_LABEL(list->data), markup);
-			g_free (markup);
-		}
-		else
-		{
-			gtk_label_set_text (GTK_LABEL(list->data), text);
-		}
-
-		g_list_free (list);
+		gtk_status_icon_get_geometry (icon, &screen, &area, NULL);
+		notify_notification_set_geometry_hints (tooltip, screen, area.x, area.y);
+		notify_notification_show (tooltip, NULL);
 	}
 
 	return;
 }
 
-void fun_tooltip_set_text2 (FunTooltip *tooltip, const gchar *text, gboolean formatting)
+void fun_tooltip_destroy (NotifyNotification *tooltip)
 {
-	GList *list;
-	gchar *markup;
-
-	if ( (list = gtk_container_get_children (GTK_CONTAINER(tooltip->vbox))) != NULL )
-	{
-		if ((list = g_list_nth (list, 1)) == NULL)
-			return;
-
-		if (text == NULL)
-		{
-			gtk_label_set_text (GTK_LABEL(list->data), NULL);
-			gtk_widget_hide (GTK_WIDGET(list->data));
-			return;
-		}
-		if (formatting == TRUE)
-		{
-			markup = g_markup_printf_escaped ("<span size=\"medium\"><i>%s</i></span>", text);
-			gtk_label_set_markup (GTK_LABEL(list->data), markup);
-			g_free (markup);
-		}
-		else
-		{
-			gtk_label_set_text (GTK_LABEL(list->data), text);
-		}
-		gtk_widget_show (GTK_WIDGET(list->data));
-		g_list_free (list);
-	}
-
-	return;
-}
-
-void fun_tooltip_set_icon (FunTooltip *tooltip, GdkPixbuf *pixbuf)
-{
-	gtk_image_set_from_pixbuf (GTK_IMAGE(tooltip->icon), pixbuf);
-
-	return;
-}
-
-void fun_tooltip_show (FunTooltip *tooltip)
-{
-	if (tooltip != NULL)
-	{
-		gtk_widget_show (GTK_WIDGET(tooltip->hbox));
-		gtk_widget_show (GTK_WIDGET(tooltip->window));
-	}
-	return;
-}
-
-void fun_tooltip_hide (FunTooltip *tooltip)
-{
-	if (tooltip != NULL)
-		gtk_widget_hide (GTK_WIDGET(tooltip->window));
-	
-	return;
-}
-
-void fun_tooltip_destroy (FunTooltip *tooltip)
-{
-	gtk_widget_destroy (GTK_WIDGET(tooltip->vbox));
-	gtk_widget_destroy (GTK_WIDGET(tooltip->hbox));
-	gtk_widget_destroy (GTK_WIDGET(tooltip->window));
-	g_free (tooltip);
+	g_object_unref (tooltip);
 
 	return;
 }
