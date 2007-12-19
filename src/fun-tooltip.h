@@ -12,7 +12,7 @@ void fun_tooltip_new (GtkStatusIcon *icon);
 void fun_tooltip_set_text (const gchar *summary, const gchar *body);
 
 /* Sets the tooltip timeout (seconds) */
-void fun_tooltip_set_timeout (guint timeout);
+void fun_tooltip_set_notification_timeout (guint timeout);
 
 /* Show the	tooltip */
 void fun_tooltip_show (GtkStatusIcon *icon);

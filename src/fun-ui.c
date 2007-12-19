@@ -87,7 +87,6 @@ static gchar *license =
 
 static gboolean fun_timeout_func (void);
 static gboolean fun_timeout_conn (void);
-static gboolean fun_timeout_notification (void);
 
 static void fun_config_dialog_show (void);
 static void fun_restart (void);
@@ -189,6 +188,7 @@ cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data)
 	
 	/* notification_timeout setting */
 	sel = gtk_adjustment_get_value (fun_config_not_tim_adj);
+	fun_tooltip_set_notification_timeout (sel);
 	fun_config_set_value_int ("notification_timeout", sel);
 	fun_config_save ();
 	
@@ -461,13 +461,8 @@ fun_timeout_func (void)
 	if (fun_dbus_perform_service (PERFORM_UPDATE, NULL, &plist, NULL)==TRUE)
 	{
 		//g_print ("\nlist is\n %s", plist);
-		fun_tooltip_set_text (_("Updates are available"), _("Yeah updates are available"));
-		//fun_tooltip_set_text2 (tooltip, _("Click here to know more.."), TRUE);
+		fun_tooltip_set_text (_("Updates are available"), _("Click the tray icon for details"));
 		fun_tooltip_show (icon);
-		/* display the notification popup for notification_timeout seconds */
-		/* we do this by registering a timeout for x seconds which will simply hide the
-		 * tooltip when fired and destroy itself */
-		g_timeout_add_seconds (fun_config_get_value_int("notification_timeout"), (GSourceFunc)fun_timeout_notification, NULL);
 		/* populate the update list */
 		fun_populate_updates_tvw (plist);
 	}
@@ -478,14 +473,6 @@ fun_timeout_func (void)
 	fun_update_status (_("Idle"));
 
 	return TRUE;
-}
-
-static gboolean
-fun_timeout_notification (void)
-{
-	//cb_fun_systray_leave_notify (NULL, NULL, NULL);
-	
-	return FALSE;
 }
 
 static void
