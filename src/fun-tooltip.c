@@ -66,6 +66,8 @@ void fun_tooltip_show (GtkStatusIcon *icon, NotifyNotification *tooltip)
 void fun_tooltip_destroy (NotifyNotification *tooltip)
 {
 	g_object_unref (tooltip);
+	notify_uninit ();
+	tooltip = NULL;
 
 	return;
 }
