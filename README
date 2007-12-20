@@ -22,6 +22,7 @@ Requirements
 * dbus-glib >= 0.73
 * gtk+2 >= 2.12.0
 * libglade-2.0 >= 2.6
+* libnotify >= 0.4.4 
 
 Using FUN
 =========
