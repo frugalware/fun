@@ -66,7 +66,7 @@ static const gchar *artists[] = { \
 
 static const gchar translators[] = \
 				"Carl Andersen <carl@frugalware.dk> (da_DK)\n"
-				"Pedro Osorio <pedroosorio777@gmail.com> (es_ES)\n"	
+				"Manuel Peral <mcklaren@gmail.com> (es_ES)\n"	
 				"Michel Hermier <michel.hermier@gmail.com> (fr_FR)\n"
 				"Miklos Vajna <vmiklos@frugalware.org> (hu_HU)\n";
 				
