@@ -19,6 +19,7 @@
  */
 
 #include "fun.h"
+#include "fun-ui.h"
 #include "fun-config.h"
 #include "fun-messages.h"
 #include "fun-tooltip.h"
@@ -31,15 +32,13 @@
 static void fun_about_show (void);
 static void fun_about_hide (void);
 static void fun_main_window_init (void);
-static void fun_main_window_show (void);
 static void fun_main_window_hide (void);
 static void fun_launch_gfpm (void);
 static void fun_populate_updates_tvw (gchar *plist);
 
-extern GladeXML *xml;
+extern GladeXML			*xml;
 
-static GtkStatusIcon	*icon = NULL;
-
+static GtkStatusIcon		*icon = NULL;
 static GtkWidget		*fun_about_dlg = NULL;
 static GtkWidget		*fun_main_window = NULL;
 static GtkWidget		*fun_statusbar = NULL;
@@ -48,8 +47,8 @@ static GtkWidget		*fun_check_btn = NULL;
 static GdkPixbuf		*fun_about_pixbuf = NULL;
 static GtkWidget		*fun_config_dlg = NULL;
 static GtkWidget		*fun_config_gfpm_launcher_combo = NULL;
-static GtkAdjustment 	*fun_config_upd_int_adj = NULL;
-static GtkAdjustment 	*fun_config_not_tim_adj = NULL;
+static GtkAdjustment 		*fun_config_upd_int_adj = NULL;
+static GtkAdjustment		*fun_config_not_tim_adj = NULL;
 static gboolean			connected = FALSE;
 
 /* credits */
@@ -96,6 +95,7 @@ static GdkPixbuf * fun_get_icon (const char *icon, int size);
 static void fun_update_status (const char *message);
 
 static gboolean	cb_fun_systray_icon_clicked (GtkStatusIcon *widget, guint button, guint activate_time, gpointer data);
+static void cb_fun_systray_icon_activated (GtkStatusIcon *widget, gpointer data);
 static void cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data);
 
 void
@@ -108,8 +108,16 @@ fun_systray_create (void)
 	fun_tooltip_new (icon);
 	fun_tooltip_set_text ("Frugalware Update Notifier", NULL);
 	
-	g_signal_connect (icon, "activate", G_CALLBACK (fun_main_window_show), NULL);
+	g_signal_connect (icon, "activate", G_CALLBACK (cb_fun_systray_icon_activated), NULL);
 	g_signal_connect (icon, "popup-menu", G_CALLBACK (cb_fun_systray_icon_clicked), NULL);
+
+	return;
+}
+
+static void
+cb_fun_systray_icon_activated (GtkStatusIcon *widget, gpointer data)
+{
+	fun_main_window_show ();
 
 	return;
 }
@@ -567,7 +575,7 @@ fun_main_window_hide (void)
 	return;
 }
 
-static void
+void
 fun_main_window_show (void)
 {
 	/* Toggle window visibility */

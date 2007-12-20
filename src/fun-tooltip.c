@@ -21,23 +21,28 @@
 #include <gtk/gtk.h>
 #include <libnotify/notification.h>
 #include <libnotify/notify.h>
+#include "fun.h"
+#include "fun-ui.h"
 #include "fun-config.h"
 #include "fun-tooltip.h"
 
 static NotifyNotification *tooltip = NULL;
 
+static void fun_tooltip_callback (NotifyNotification *ttip, gchar *id, gpointer data);
+
 void fun_tooltip_new (GtkStatusIcon *icon)
 {
 	notify_init ("fun");
 	tooltip = notify_notification_new ("Frugalware Update Notifier",
-										NULL,
-										"fun",
-										NULL);
+						NULL,
+						"fun",
+						NULL);
 	notify_notification_set_category (tooltip, "information");
 	notify_notification_set_timeout (tooltip, (fun_config_get_value_int("notification_timeout")*1000));
 	notify_notification_set_urgency (tooltip, NOTIFY_URGENCY_NORMAL);
 	notify_notification_attach_to_status_icon (tooltip, icon);
-	
+	notify_notification_add_action (tooltip, "view_updates", _("View Updates"), (NotifyActionCallback)fun_tooltip_callback, NULL, NULL);
+
 	return;
 }
 
@@ -52,7 +57,7 @@ void fun_tooltip_set_text (const gchar *summary, const gchar *body)
 void fun_tooltip_set_notification_timeout (guint timeout)
 {
 	notify_notification_set_timeout (tooltip, timeout*1000);
-	
+
 	return;
 }
 
@@ -76,6 +81,17 @@ void fun_tooltip_destroy (void)
 	g_object_unref (tooltip);
 	notify_uninit ();
 	tooltip = NULL;
+
+	return;
+}
+
+static void
+fun_tooltip_callback (NotifyNotification *ttip, gchar *id, gpointer data)
+{
+	if (!strcmp(id,"view_updates"))
+	{
+		fun_main_window_show ();
+	}
 
 	return;
 }
