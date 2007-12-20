@@ -459,11 +459,10 @@ fun_timeout_func (void)
 	gtk_widget_set_sensitive (fun_check_btn, FALSE);
 	if (fun_dbus_perform_service (PERFORM_UPDATE, NULL, &plist, NULL)==TRUE)
 	{
-		//g_print ("\nlist is\n %s", plist);
-		fun_tooltip_set_text (_("Updates are available"), _("Click the tray icon for details"));
-		fun_tooltip_show (icon);
 		/* populate the update list */
 		fun_populate_updates_tvw (plist);
+		fun_tooltip_set_text (_("Updates are available"), _("New package updates are available for your system. Click the tray icon for more details"));
+		fun_tooltip_show (icon);
 	}
 
 	/* re-enable the "check" button now */
@@ -520,7 +519,7 @@ fun_populate_updates_tvw (gchar *plist)
 	GtkTreeIter		iter;
 	GList			*l = NULL;
 	GdkPixbuf		*icon = NULL;
-	
+
 	/* convert the updates string to a GList */
 	GList	*pack_list = NULL;
 	pkg = strtok (plist, " ");
