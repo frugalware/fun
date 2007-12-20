@@ -381,14 +381,13 @@ fun_ui_init (void)
 								"to reconnect to the daemon every 45 seconds. \n\nYou can start the "
 								"update notifier daemon by running the following command as root: \n\n"
 								"'service fun start'");
-	notify_init ("fun");
 	fun_systray_create ();
 	fun_main_window_init ();
 	fun_config_dialog_init ();
 	
 	if (fun_dbus_perform_service (TEST_SERVICE, NULL, NULL, NULL) == FALSE)
 	{
-		g_print (_("Failed to connect to the fun daemon\n"));
+		g_error (_("Failed to connect to the fun daemon\n"));
 		//fun_tooltip_set_text2 (tooltip, _("Not connected to fun daemon"), FALSE);
 		connected = FALSE;
 		/* set the status */

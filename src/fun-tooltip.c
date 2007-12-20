@@ -28,6 +28,7 @@ static NotifyNotification *tooltip = NULL;
 
 void fun_tooltip_new (GtkStatusIcon *icon)
 {
+	notify_init ("fun");
 	tooltip = notify_notification_new ("Frugalware Update Notifier",
 										NULL,
 										"fun",
