@@ -7,9 +7,7 @@
   requiring to restart fun
 * allow an option to start the fun daemon from fun itself (requires root
   previleges ofcourse) [crazy's idea]
-* get rid of eggtrayicon. use GtkStatusIcon. what we currently use is a
-  mix of both ;) [idea by hermier]
 * Instead of the client querying the daemon for updates, let the daemon
   notify the client in case of an update. [hermier]
 
-  last updated by Priyank: 2007 11 23 21:49 IST
+  last updated by Priyank: 2007 12 20 15:00 IST
