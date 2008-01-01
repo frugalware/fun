@@ -1,11 +1,12 @@
 VERSION					DESCRIPTION
 ---------------------------------------------------------------------------------------------------------
-0.2.0 (2007-12-xx)		- Migrated to libnotify for displaying notification popups.
+0.2.0 (2008-01-01)		- Migrated to libnotify for displaying notification popups.
 				- Got rid of EggTrayIcon. FUN client now uses GtkStatusIcon.
 				- FUN client now performs a first-run update check everytime it's started.
 				  This is needed because otherwise the very first update check will mostly fail.
 				- Other minor fixes.
 				- New translations: (Danish) da_DK, (Spanish) es_ES
+				- Updated translations: (Hungarian) hu_HU, (French) fr_FR
 
 0.1.0 (2007-11-21)		- Initial Release
 
