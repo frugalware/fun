@@ -497,7 +497,7 @@ fun_about_show (void)
 		fun_about_dlg = gtk_about_dialog_new ();
 		gtk_about_dialog_set_name (GTK_ABOUT_DIALOG(fun_about_dlg), PACKAGE);
 		gtk_about_dialog_set_version (GTK_ABOUT_DIALOG(fun_about_dlg), ver);
-		gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG(fun_about_dlg), _("(C) 2007 Frugalware Developer Team (GPL)"));
+		gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG(fun_about_dlg), _("(C) 2007-2008 Frugalware Developer Team (GPL)"));
 		gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG(fun_about_dlg), _("Frugalware Update Notifier"));
 		gtk_about_dialog_set_license (GTK_ABOUT_DIALOG(fun_about_dlg), license);
 		gtk_about_dialog_set_website (GTK_ABOUT_DIALOG(fun_about_dlg), "http://www.frugalware.org/");
