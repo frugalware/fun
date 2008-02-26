@@ -1,3 +1,5 @@
 src/fun.c
 src/fun-ui.c
 src/fun-tooltip.c
+data/fun.glade
+
