@@ -33,6 +33,7 @@
             <child>
               <widget class="GtkToolButton" id="button_prefs">
                 <property name="visible">True</property>
+                <property name="label" translatable="yes">Preferences</property>
                 <property name="stock_id">gtk-preferences</property>
                 <signal name="clicked" handler="execution"/>
               </widget>
@@ -43,6 +44,7 @@
             <child>
               <widget class="GtkToolButton" id="button_about">
                 <property name="visible">True</property>
+                <property name="label" translatable="yes">About</property>
                 <property name="stock_id">gtk-about</property>
                 <signal name="clicked" handler="show_about"/>
               </widget>
@@ -53,6 +55,7 @@
             <child>
               <widget class="GtkToolButton" id="button_close">
                 <property name="visible">True</property>
+                <property name="label" translatable="yes">Close</property>
                 <property name="stock_id">gtk-close</property>
                 <signal name="clicked" handler="gtk_widget_hide" object="fun_mainwindow"/>
               </widget>
