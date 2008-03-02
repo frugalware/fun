@@ -1,7 +1,7 @@
 ENV_CFLAGS=$CFLAGS
 
 AC_PREREQ(2.59)
-AC_INIT([fun], 0.2.0, [frugalware-devel@frugalware.org], fun)
+AC_INIT([fun], 0.2.1, [frugalware-devel@frugalware.org], fun)
 AC_CONFIG_SRCDIR([src/fun.c])
 AC_LANG(C)
 AM_CONFIG_HEADER(config.h)
