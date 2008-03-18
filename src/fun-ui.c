@@ -136,7 +136,7 @@ cb_fun_systray_icon_clicked (GtkStatusIcon *widget, guint button, guint activate
 		menu = gtk_menu_new ();
 
 		/* About */
-		menu_item = gtk_image_menu_item_new_with_label ("About FUN");
+		menu_item = gtk_image_menu_item_new_with_label (_("About FUN"));
 		image = gtk_image_new_from_stock ("gtk-about", GTK_ICON_SIZE_MENU);
 		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM(menu_item), image);
 		g_signal_connect (G_OBJECT(menu_item), "activate", G_CALLBACK(fun_about_show), NULL);
