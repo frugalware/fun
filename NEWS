@@ -1,5 +1,7 @@
 VERSION					DESCRIPTION
 ---------------------------------------------------------------------------------------------------------
+0.2.2 (2008-03-23)		- BUGFIX (#2883): FUN always checks for updates in the -current repo even on
+				  -stable systems. NOTE: This affects only -stable users.
 0.2.1 (2008-03-02)		- Translation updates
 				- New translation: (Czech) cs_CZ
 0.2.0 (2008-01-01)		- Migrated to libnotify for displaying notification popups.
