@@ -34,9 +34,19 @@
 #include "fund.h"
 #include "fund-dbus-glue.h"
 
+#define FW_STABLE	"frugalware"
+#define FW_CURRENT	"frugalware-current"
+#define CFG_FILE	"/etc/pacman-g2.conf"
+
+typedef enum _repo_type {
+	FW_REPO_STABLE,
+	FW_REPO_CURRENT
+} FW_REPO_TYPE;
+
 typedef void* netbuf;
 static PM_DB *sync_db = NULL;
 static PM_DB *local_db = NULL;
+static GList *dblist = NULL;
 
 G_DEFINE_TYPE(FWUpdateNotifier, fund, G_TYPE_OBJECT);
 
@@ -80,15 +90,48 @@ _log_cb (unsigned short level, char *msg) {
 	return;
 }
 
+static void
+_db_cb (char *section, PM_DB *db) {
+	dblist = g_list_append (dblist, db);
+
+	return;
+}
+
 static gboolean
 _updatenotifierd_init_pacman () {
+	int fw_repo;
+
 	/* initialize the pacman-g2 library */
 	if (pacman_initialize ("/") == -1)
 		return FALSE;
 
+	/* parse the pacman-g2 config */
+	if (pacman_parse_config(CFG_FILE,_db_cb,"") == -1)
+		return FALSE;
+
+	/* check if we're on -stable or -current */
+	while (dblist != NULL) {
+		char *repo = NULL;
+		repo = (char*)pacman_db_getinfo ((PM_DB*)dblist->data, PM_DB_TREENAME);
+		if (!strcmp(repo,FW_STABLE))
+		{
+			fw_repo = FW_REPO_STABLE;
+			break;
+		}
+		else if (!strcmp(repo,FW_CURRENT))
+		{
+			fw_repo = FW_REPO_CURRENT;
+			break;
+		}
+		dblist = g_list_next (dblist);
+	}
+
 	/* register the main repo */
 	/* FIXME: Later add support for custom repos */
-	sync_db = pacman_db_register ("frugalware-current");
+	if (fw_repo == FW_REPO_CURRENT)
+		sync_db = pacman_db_register (FW_CURRENT);
+	else
+		sync_db = pacman_db_register (FW_STABLE);
 	local_db = pacman_db_register ("local");
 
 	if (sync_db == NULL)
@@ -96,8 +139,7 @@ _updatenotifierd_init_pacman () {
 	if (local_db == NULL)
 		return FALSE;
 
-	/* parse the pacman-g2 config */
-	pacman_parse_config ("/etc/pacman.conf", NULL, "");
+	/* set some important pacman-g2 options */
 	pacman_set_option (PM_OPT_LOGMASK, (long)-1);
 	pacman_set_option (PM_OPT_LOGCB, (long)_log_cb);
 	
