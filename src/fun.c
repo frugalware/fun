@@ -38,7 +38,7 @@ fun_glade_init (void)
 	gboolean ret = FALSE;
 
 	path = g_strdup_printf ("%s/share/fun/fun.glade", PREFIX);
-	if ((xml=glade_xml_new(path,NULL,"UTF-8")))
+	if ((xml=glade_xml_new(path,NULL,NULL)))
 		ret = TRUE;
 	g_free (path);
 
