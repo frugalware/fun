@@ -392,4 +392,15 @@ fun_news_backend_init (void)
 	return;
 }
 
+/**
+ * fun_get_existing_news_list:
+ *
+ * Returns a GList of existing news items
+ */
+GList*
+fun_get_existing_news_list (void)
+{
+	return e_news_item_list;
+}
+
 

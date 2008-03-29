@@ -13,6 +13,7 @@ fun_SOURCES	= wejpconfig.c \
 			  fun-messages.c \
 			  fun-ui.c \
 			  fun-news_backend.c \
+			  fun-news_interface.c \
 			  fun-dbus.c \
 			  fun.c
 
