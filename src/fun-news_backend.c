@@ -26,11 +26,11 @@
 #define NEWS_ITEM_LIST	".fun/news/list"
 
 /* populated on every update */
-GList	*news_item_list = NULL;
+static GList	*news_item_list = NULL;
 
 /* populated on startup and updated regularly */
 /* existing news item list */
-GList	*e_news_item_list = NULL;
+static GList	*e_news_item_list = NULL;
 
 /**
  *
@@ -167,16 +167,20 @@ fun_populate_existing_news_list (void)
 	FILE *fp = NULL;
 	char line[PATH_MAX+1] = "";
 	NewsItem *item = NULL;
+	char *path = NULL;
+	char *npath = NULL;
 	
-	if (!(fp=fopen(NEWS_ITEM_LIST,"r")))
+	path = cfg_get_path_to_config_file (NEWS_ITEM_LIST);
+	if (!(fp=fopen(path,"r")))
 		return;
+	g_free (path);
 	while (fgets(line,PATH_MAX,fp))
 	{
 		g_strstrip (line);
 		if (strlen(line))
 		{
-			char *path = g_strdup_printf ("%s/%s", NEWS_ITEM_DIR, line);
-			char *npath = cfg_get_path_to_config_file (path);
+			path = g_strdup_printf ("%s/%s", NEWS_ITEM_DIR, line);
+			npath = cfg_get_path_to_config_file (path);
 			//g_print ("Getting for %s\n", npath);
 			item = fun_get_news_item_from_file (npath);
 			item->id = atoi (line);
