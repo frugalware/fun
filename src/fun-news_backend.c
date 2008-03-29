@@ -86,7 +86,7 @@ fun_compare_lists (GList *oldlist, GList *newlist)
 		if (found == NULL)
 		{
 			g_print ("LATEST: %d\n", ni->id);
-			ret = g_list_append (ret, temp);
+			ret = g_list_append (ret, ni);
 		}
 		
 		temp = g_list_next (temp);
@@ -213,11 +213,14 @@ static int
 fun_add_entry_to_newslist (gint id)
 {
 	FILE *fp = NULL;
+	char *path = NULL;
 	
-	if (!(fp=fopen(NEWS_ITEM_LIST,"a")))
+	path = cfg_get_path_to_config_file (NEWS_ITEM_LIST);
+	if (!(fp=fopen(path,"a")))
 		return -1;
 	fprintf (fp, "%d\n", id);
 	fclose (fp);
+	g_free (path);
 	
 	return 0;
 }
@@ -229,7 +232,7 @@ fun_add_entry_to_newslist (gint id)
  *
  * Saves a news item to file
  */
-static int
+int
 fun_save_news_to_file (NewsItem *item)
 {
 	FILE *fp = NULL;

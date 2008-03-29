@@ -30,6 +30,7 @@
 #endif
 
 extern GladeXML		*xml;
+extern GtkStatusIcon	*icon;
 
 static GtkWidget	*fun_news_tvw = NULL;
 static GtkWidget	*fun_news_txtvw = NULL;
@@ -87,6 +88,7 @@ fun_news_interface_init (void)
 	/* the news check timeout */
 	seconds += 60;
 	g_timeout_add_seconds (seconds, (GSourceFunc)fun_news_check_func, NULL);
+	fun_news_check_func ();
 	
 	return;
 }
@@ -159,15 +161,25 @@ fun_news_prefetch_func (void)
 static gboolean
 fun_news_check_func (void)
 {
-	GList	*latest = NULL;
+	GList		*latest = NULL;
+	NewsItem	*lastitem = NULL;
 	
 	/* see if updates are available */
 	latest = fun_compare_lists (fun_get_existing_news_list(), fun_get_new_news_list());
-	if (latest != NULL)
+	while (latest != NULL)
 	{
+		NewsItem *i = NULL;
 		
+		i = latest->data;
+		fun_save_news_to_file (i);
+		lastitem = i;
+		latest = g_list_next (latest);
 	}
-	
+	if (lastitem)
+	{
+		fun_tooltip_set_text (_("Latest News"), lastitem->title);
+		fun_tooltip_show (icon);
+	}
 	return TRUE;
 }
 

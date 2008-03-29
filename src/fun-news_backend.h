@@ -23,6 +23,8 @@ GList* fun_get_new_news_list (void);
 
 void fun_fetch_news_xml (void);
 
+int fun_save_news_to_file (NewsItem *item);
+
 GList* fun_compare_lists (GList *oldlist, GList *newlist);
 
 #endif

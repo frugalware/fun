@@ -38,7 +38,7 @@ static void fun_populate_updates_tvw (gchar *plist);
 
 extern GladeXML			*xml;
 
-static GtkStatusIcon		*icon = NULL;
+GtkStatusIcon			*icon = NULL;
 static GtkWidget		*fun_about_dlg = NULL;
 static GtkWidget		*fun_main_window = NULL;
 static GtkWidget		*fun_statusbar = NULL;
