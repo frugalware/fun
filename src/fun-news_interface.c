@@ -35,6 +35,10 @@ static GtkWidget	*fun_news_tvw = NULL;
 static GtkWidget	*fun_news_txtvw = NULL;
 
 static void fun_news_interface_populate_newslist (void);
+static void fun_news_interface_display_news_for_id (guint id);
+
+/* CALLBACKS */
+static void cb_fun_news_tvw_selected (GtkTreeSelection *selection, gpointer data);
 
 void
 fun_news_interface_init (void)
@@ -42,6 +46,7 @@ fun_news_interface_init (void)
 	GtkListStore		*store = NULL;
 	GtkCellRenderer		*renderer = NULL;
 	GtkTreeViewColumn	*column = NULL;
+	GtkTreeSelection	*selection = NULL;
 
 	fun_news_tvw = glade_xml_get_widget (xml, "fun_news_treeview");
 	fun_news_txtvw = glade_xml_get_widget (xml, "fun_news_textview");
@@ -69,6 +74,8 @@ fun_news_interface_init (void)
 	gtk_tree_view_column_set_min_width (column, 80);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(fun_news_tvw), column);
 	gtk_tree_view_set_model (GTK_TREE_VIEW(fun_news_tvw), GTK_TREE_MODEL(store));
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(fun_news_tvw));
+	g_signal_connect (selection, "changed", G_CALLBACK(cb_fun_news_tvw_selected), NULL);
 	
 	fun_news_interface_populate_newslist ();
 	
@@ -95,6 +102,54 @@ fun_news_interface_populate_newslist (void)
 		gtk_list_store_append (store, &iter);
 		gtk_list_store_set (store, &iter, 0, item->id, 1, g_strdelimit(title,"\n",0), -1);
 		list = g_list_next (list);
+	}
+
+	return;
+}
+
+static void
+fun_news_interface_display_news_for_id (guint id)
+{
+	GList		*list = NULL;
+	GtkTextBuffer	*buffer = NULL;
+	GtkTextIter	iter;
+	gboolean	flag = FALSE;
+
+	list = fun_get_existing_news_list ();
+	while (list != NULL)
+	{
+		NewsItem	*item = NULL;
+		item = (NewsItem*) list->data;
+		if (item->id == id)
+		{
+			buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW(fun_news_txtvw));
+			gtk_text_buffer_set_text (buffer, "", 0);
+			gtk_text_buffer_get_iter_at_offset (buffer, &iter, 0);
+			gtk_text_buffer_insert (buffer, &iter, "\n", -1);
+			gtk_text_buffer_insert (buffer, &iter, item->title, -1);
+			gtk_text_buffer_insert (buffer, &iter, "\n\n", -1);
+			gtk_text_buffer_insert (buffer, &iter, item->description, -1);
+			flag = TRUE;
+			break;
+		}
+		list = g_list_next (list);
+	}
+	if (flag) gtk_text_view_set_buffer (GTK_TEXT_VIEW(fun_news_txtvw), buffer);
+	
+	return;
+}
+
+static void
+cb_fun_news_tvw_selected (GtkTreeSelection *selection, gpointer data)
+{
+	GtkTreeModel	*model;
+	GtkTreeIter	iter;
+	guint		id = 0;
+
+	if (gtk_tree_selection_get_selected(selection, &model, &iter))
+	{
+		gtk_tree_model_get (model, &iter, 0, &id, -1);
+		fun_news_interface_display_news_for_id (id);
 	}
 
 	return;

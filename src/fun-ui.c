@@ -176,7 +176,7 @@ cb_fun_systray_icon_clicked (GtkStatusIcon *widget, guint button, guint activate
 static void
 cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data)
 {
-	GtkAdjustment 	*adj = NULL;
+	GtkAdjustment 		*adj = NULL;
 	guint			interval = 0;
 	guint			old_interval = 0;
 	gint			sel = 0;
@@ -216,7 +216,7 @@ cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data)
 		fun_config_set_value_int ("update_interval", interval);
 		fun_config_save ();
 		if (fun_question(_("Restart Fun"),
-						_("Fun needs to be restarted in order for the changes to take effect. Do you want to restart Fun now ?")) == GTK_RESPONSE_YES)
+				_("Fun needs to be restarted in order for the changes to take effect. Do you want to restart Fun now ?")) == GTK_RESPONSE_YES)
 		{
 			fun_restart ();
 		}
@@ -535,7 +535,7 @@ static void
 fun_populate_updates_tvw (gchar *plist)
 {
 	char 			*pkg = NULL;
-	GtkListStore	*store = NULL;
+	GtkListStore		*store = NULL;
 	GtkTreeIter		iter;
 	GList			*l = NULL;
 	GdkPixbuf		*icon = NULL;
@@ -601,11 +601,11 @@ static GdkPixbuf *
 fun_get_icon (const char *icon, int size)
 {
 	GtkIconTheme	*icon_theme = NULL;
-	GdkPixbuf		*ret = NULL;
-	GError			*error = NULL;
+	GdkPixbuf	*ret = NULL;
+	GError		*error = NULL;
 	
 	icon_theme = gtk_icon_theme_get_default ();
-	ret = gtk_icon_theme_load_icon (icon_theme,	icon, size, 0, &error);
+	ret = gtk_icon_theme_load_icon (icon_theme, icon, size, 0, &error);
 
 	return ret;
 }
