@@ -49,6 +49,9 @@ fun_glade_init (void)
 int
 main (int argc, char **argv)
 {
+	/* initialize thread */
+	g_thread_init (NULL);
+
 	/* set the locale */
 	setlocale (LC_ALL, "");
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
@@ -76,7 +79,9 @@ main (int argc, char **argv)
 	fun_ui_init ();
 
 	/* run the gtk+ main loop */
+	gdk_threads_enter ();
 	gtk_main ();
+	gdk_threads_leave ();
 
 	fun_ui_cleanup ();
 

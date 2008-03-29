@@ -381,20 +381,17 @@ fun_main_window_init (void)
 	return;
 }
 
-void
-fun_ui_init (void)
+void*
+fun_init_thread (void *ptr)
 {
 	GError		*error = NULL;
 	gulong		seconds = 0;
 	gchar		*plist = NULL;
-	static gchar *error_msg = ("Update checking has been disabled because FUN has detected "
-								"that the update notifier daemon is not running. FUN will attempt "
-								"to reconnect to the daemon every 45 seconds. \n\nYou can start the "
-								"update notifier daemon by running the following command as root: \n\n"
-								"'service fun start'");
-	fun_systray_create ();
-	fun_main_window_init ();
-	fun_config_dialog_init ();
+	static gchar	*error_msg = ("Update checking has been disabled because FUN has detected "
+					"that the update notifier daemon is not running. FUN will attempt "
+					"to reconnect to the daemon every 45 seconds. \n\nYou can start the "
+					"update notifier daemon by running the following command as root: \n\n"
+					"'service fun start'");
 	
 	if (fun_dbus_perform_service (TEST_SERVICE, NULL, NULL, NULL) == FALSE)
 	{
@@ -422,6 +419,17 @@ fun_ui_init (void)
 	g_timeout_add_seconds (seconds, (GSourceFunc)fun_timeout_func, NULL);
 	/* set the status */
 	fun_update_status (_("Idle"));
+}
+
+void
+fun_ui_init (void)
+{
+	fun_systray_create ();
+	fun_main_window_init ();
+	fun_config_dialog_init ();
+	
+	if (!g_thread_create(&fun_init_thread, NULL, FALSE, NULL) != 0)
+    		g_warning ("Failed to create FUN init thread");
 
 	return;
 }

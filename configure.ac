@@ -27,7 +27,7 @@ if test "x$DBUSBINDINGTOOL" = "xno"; then
 fi
 
 AC_SUBST(DBUS_BINDING_TOOL)
-ui_modules="gtk+-2.0 >= 2.12.0 libglade-2.0 >= 2.6.0 libxml-2.0 libnotify"
+ui_modules="gtk+-2.0 >= 2.12.0 libglade-2.0 >= 2.6.0 libxml-2.0 gthread-2.0 libnotify"
 PKG_CHECK_MODULES([FUND], [dbus-glib-1 >= 0.73])
 PKG_CHECK_MODULES([FUN], [$ui_modules])
 
