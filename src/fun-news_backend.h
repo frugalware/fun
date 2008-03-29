@@ -13,12 +13,11 @@ typedef struct _newsitem {
 	char	*description;
 } NewsItem;
 
-void fun_backend_init (void);
+void fun_news_backend_init (void);
 
 void populate_existing_news_list (void);
 
 GList* fun_compare_lists (GList *oldlist, GList *newlist);
-
 
 #endif
 

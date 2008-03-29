@@ -27,6 +27,7 @@
 
 #include "fun.h"
 #include "fun-config.h"
+#include "fun-news_backend.h"
 #include "fun-messages.h"
 
 GladeXML *xml = NULL;
@@ -71,6 +72,7 @@ main (int argc, char **argv)
 		fun_error (_("Error"), _("Failed to initialize interface"));
 		return -1;
 	}
+	fun_news_backend_init ();
 	fun_ui_init ();
 
 	/* run the gtk+ main loop */

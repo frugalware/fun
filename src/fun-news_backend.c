@@ -380,7 +380,7 @@ processNode (xmlTextReaderPtr *reader)
  * Initializes the fun news notification backend
  */
 void
-fun_backend_init (void)
+fun_news_backend_init (void)
 {
 	LIBXML_TEST_VERSION
 
