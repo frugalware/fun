@@ -350,7 +350,7 @@ processNode (xmlTextReaderPtr *reader)
    		 	g_strstrip (temp);
 			if (strlen(temp)>5)
 			{
-				newsitem->id = getNewsIdFromUrl (temp);
+				newsitem->id = fun_get_news_id_from_url (temp);
 				printf ("ID: %d\n", newsitem->id);
 				g_free (temp);
 			}
@@ -385,6 +385,59 @@ processNode (xmlTextReaderPtr *reader)
 	return;
 }
 
+/**
+ * fun_parse_news_xml:
+ * @filename: the file name to parse
+ *
+ * Parse and print information about an XML file.
+ */
+static void
+fun_parse_news_xml (const char *filename)
+{
+	xmlTextReaderPtr reader;
+	int ret;
+	gchar *path = NULL;
+
+	reader = xmlReaderForFile (filename, NULL, 0);
+	if (reader != NULL)
+	{
+        	ret = xmlTextReaderRead (reader);
+		while (ret == 1)
+		{
+			processNode (&reader);
+			ret = xmlTextReaderRead (reader);
+		}
+		xmlFreeTextReader (reader);
+		/*
+		if (ret != 0)
+		{
+			fprintf (stderr, "%s : failed to parse\n", filename);
+			return;
+		}
+		*/
+	}
+	else
+	{
+		fprintf (stderr, "Unable to open %s\n", filename);
+		return;
+	}
+	news_item_list = g_list_reverse (news_item_list);
+	path = cfg_get_path_to_config_file (NEWS_ITEM_LIST);
+	g_print (path);
+	if (g_file_test(path,G_FILE_TEST_EXISTS)==FALSE)
+	{
+		GList *templist = NULL;
+		templist = news_item_list;
+		while (templist!=NULL)
+		{
+			fun_save_news_to_file ((NewsItem*)templist->data);
+			templist = g_list_next (templist);
+		}
+	}
+	
+	return;
+}
+
 static size_t
 fun_news_write_func (void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
@@ -416,9 +469,6 @@ fun_news_rss_fetch_thread (void *ptr)
 		curl_easy_setopt (curl, CURLOPT_WRITEDATA, outfile);
 		curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, fun_news_write_func);
 		curl_easy_setopt (curl, CURLOPT_READFUNCTION, fun_news_read_func);
-	//	curl_easy_setopt (curl, CURLOPT_NOPROGRESS, FALSE);
-	//	curl_easy_setopt (curl, CURLOPT_PROGRESSFUNCTION, fun_news_progress_func);
-	//	curl_easy_setopt (curl, CURLOPT_PROGRESSDATA, Bar);
 
 		res = curl_easy_perform (curl);
 		if (res != 0)
@@ -428,6 +478,7 @@ fun_news_rss_fetch_thread (void *ptr)
 		else
 		{
 			fetched = TRUE;
+			fun_parse_news_xml (path);
 		}
 		fclose (outfile);
 		curl_easy_cleanup (curl);
@@ -435,6 +486,16 @@ fun_news_rss_fetch_thread (void *ptr)
 	}
 
 	return NULL;
+}
+
+void
+fun_fetch_news_xml (void)
+{
+	/* create the news fetcher thread */
+	if (!g_thread_create(&fun_news_rss_fetch_thread, NEWS_URL, FALSE, NULL) != 0)
+    		g_warning ("Failed to create FUN news fetcher thread");
+    		
+    	return;
 }
 
 /**
@@ -451,10 +512,6 @@ fun_news_backend_init (void)
 	 * stored on disk */
 	fun_populate_existing_news_list ();
 	e_news_item_list = g_list_reverse (e_news_item_list);
-	
-	/* create the news fetcher thread */
-	if (!g_thread_create(&fun_news_rss_fetch_thread, NEWS_URL, FALSE, NULL) != 0)
-    		g_warning ("Failed to create FUN news fetcher thread");
 
 	return;
 }
@@ -468,6 +525,17 @@ GList*
 fun_get_existing_news_list (void)
 {
 	return e_news_item_list;
+}
+
+/**
+ * fun_get_new_news_list:
+ *
+ * Returns a GList of existing news items
+ */
+GList*
+fun_get_new_news_list (void)
+{
+	return news_item_list;
 }
 
 

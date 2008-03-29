@@ -36,6 +36,8 @@ static GtkWidget	*fun_news_txtvw = NULL;
 
 static void fun_news_interface_populate_newslist (void);
 static void fun_news_interface_display_news_for_id (guint id);
+static gboolean fun_news_prefetch_func (void);
+static gboolean fun_news_check_func (void);
 
 /* CALLBACKS */
 static void cb_fun_news_tvw_selected (GtkTreeSelection *selection, gpointer data);
@@ -47,6 +49,7 @@ fun_news_interface_init (void)
 	GtkCellRenderer		*renderer = NULL;
 	GtkTreeViewColumn	*column = NULL;
 	GtkTreeSelection	*selection = NULL;
+	guint			seconds;
 
 	fun_news_tvw = glade_xml_get_widget (xml, "fun_news_treeview");
 	fun_news_txtvw = glade_xml_get_widget (xml, "fun_news_textview");
@@ -78,6 +81,12 @@ fun_news_interface_init (void)
 	g_signal_connect (selection, "changed", G_CALLBACK(cb_fun_news_tvw_selected), NULL);
 	
 	fun_news_interface_populate_newslist ();
+	/* fetch latest news xml 1 minute earlier than the check */
+	seconds = (fun_config_get_value_int ("news_interval") * 60) - 60;
+	g_timeout_add_seconds (seconds, (GSourceFunc)fun_news_prefetch_func, NULL);
+	/* the news check timeout */
+	seconds += 60;
+	g_timeout_add_seconds (seconds, (GSourceFunc)fun_news_check_func, NULL);
 	
 	return;
 }
@@ -137,6 +146,29 @@ fun_news_interface_display_news_for_id (guint id)
 	if (flag) gtk_text_view_set_buffer (GTK_TEXT_VIEW(fun_news_txtvw), buffer);
 
 	return;
+}
+
+static gboolean
+fun_news_prefetch_func (void)
+{
+	fun_fetch_news_xml ();
+
+	return TRUE;
+}
+
+static gboolean
+fun_news_check_func (void)
+{
+	GList	*latest = NULL;
+	
+	/* see if updates are available */
+	latest = fun_compare_lists (fun_get_existing_news_list(), fun_get_new_news_list());
+	if (latest != NULL)
+	{
+		
+	}
+	
+	return TRUE;
 }
 
 static void

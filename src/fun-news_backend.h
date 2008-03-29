@@ -19,6 +19,10 @@ void populate_existing_news_list (void);
 
 GList* fun_get_existing_news_list (void);
 
+GList* fun_get_new_news_list (void);
+
+void fun_fetch_news_xml (void);
+
 GList* fun_compare_lists (GList *oldlist, GList *newlist);
 
 #endif
