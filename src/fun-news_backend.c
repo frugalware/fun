@@ -19,9 +19,14 @@
  */
 
 #include <libxml/xmlreader.h>
+#include <curl/curl.h>
+#include <curl/types.h>
+#include <curl/easy.h>
 #include "fun-news_backend.h"
 #include "wejpconfig.h"
 
+#define NEWS_URL	"http://frugalware.org/rss/news"
+#define NEWS_XML	".fun/news/news.xml"
 #define NEWS_ITEM_DIR	".fun/news"
 #define NEWS_ITEM_LIST	".fun/news/list"
 
@@ -31,6 +36,8 @@ static GList	*news_item_list = NULL;
 /* populated on startup and updated regularly */
 /* existing news item list */
 static GList	*e_news_item_list = NULL;
+
+static gboolean fetched = FALSE;
 
 /**
  *
@@ -378,6 +385,58 @@ processNode (xmlTextReaderPtr *reader)
 	return;
 }
 
+static size_t
+fun_news_write_func (void *ptr, size_t size, size_t nmemb, FILE *stream)
+{
+	return fwrite (ptr, size, nmemb, stream);
+}
+
+static size_t
+fun_news_read_func (void *ptr, size_t size, size_t nmemb, FILE *stream)
+{
+	return fread (ptr, size, nmemb, stream);
+}
+
+static void*
+fun_news_rss_fetch_thread (void *ptr)
+{
+	CURL		*curl;
+	CURLcode	res;
+	FILE		*outfile;
+	gchar		*url = ptr;
+	gchar		*path = NULL;
+
+	curl = curl_easy_init ();
+	if (curl)
+	{
+		path = cfg_get_path_to_config_file (NEWS_XML);
+		outfile = fopen (path, "w");
+
+		curl_easy_setopt (curl, CURLOPT_URL, url);
+		curl_easy_setopt (curl, CURLOPT_WRITEDATA, outfile);
+		curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, fun_news_write_func);
+		curl_easy_setopt (curl, CURLOPT_READFUNCTION, fun_news_read_func);
+	//	curl_easy_setopt (curl, CURLOPT_NOPROGRESS, FALSE);
+	//	curl_easy_setopt (curl, CURLOPT_PROGRESSFUNCTION, fun_news_progress_func);
+	//	curl_easy_setopt (curl, CURLOPT_PROGRESSDATA, Bar);
+
+		res = curl_easy_perform (curl);
+		if (res != 0)
+		{
+			fetched = FALSE;
+		}
+		else
+		{
+			fetched = TRUE;
+		}
+		fclose (outfile);
+		curl_easy_cleanup (curl);
+		g_free (path);
+	}
+
+	return NULL;
+}
+
 /**
  * fun_backend_init:
  *
@@ -392,6 +451,10 @@ fun_news_backend_init (void)
 	 * stored on disk */
 	fun_populate_existing_news_list ();
 	e_news_item_list = g_list_reverse (e_news_item_list);
+	
+	/* create the news fetcher thread */
+	if (!g_thread_create(&fun_news_rss_fetch_thread, NEWS_URL, FALSE, NULL) != 0)
+    		g_warning ("Failed to create FUN news fetcher thread");
 
 	return;
 }

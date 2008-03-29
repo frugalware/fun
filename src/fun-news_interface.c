@@ -135,7 +135,7 @@ fun_news_interface_display_news_for_id (guint id)
 		list = g_list_next (list);
 	}
 	if (flag) gtk_text_view_set_buffer (GTK_TEXT_VIEW(fun_news_txtvw), buffer);
-	
+
 	return;
 }
 
