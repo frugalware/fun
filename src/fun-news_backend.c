@@ -461,11 +461,15 @@ fun_news_rss_fetch_thread (void *ptr)
 	FILE		*outfile;
 	gchar		*url = ptr;
 	gchar		*path = NULL;
+	gchar		*dir = NULL;
 
 	curl = curl_easy_init ();
 	if (curl)
 	{
 		path = cfg_get_path_to_config_file (NEWS_XML);
+		dir = g_build_path (G_DIR_SEPARATOR_S, g_get_home_dir(), NEWS_ITEM_DIR, NULL);
+		g_mkdir_with_parents (dir, 0755);
+		g_free (dir);
 		outfile = fopen (path, "w");
 
 		curl_easy_setopt (curl, CURLOPT_URL, url);
