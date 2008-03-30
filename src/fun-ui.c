@@ -333,7 +333,7 @@ fun_config_dialog_show (void)
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(fun_config_news_chkbtn), FALSE);
 		}
 		/* populate the browser list combo */
-		store = GTK_LIST_STORE (gtk_combo_box_get_model(GTK_COMBO_BOX(fun_config_browser_list_combo)));
+		store = gtk_list_store_new (1, G_TYPE_STRING);
 		gtk_list_store_clear (store);
 		browsers = fun_config_get_available_browsers ();
 		while (browsers != NULL)
@@ -347,8 +347,9 @@ fun_config_dialog_show (void)
 			gtk_list_store_set (store, &iter, 0, browsers->data, -1);
 			browsers = g_list_next (browsers);
 		}
-		//gtk_combo_box_set_model (GTK_COMBO_BOX(fun_config_browser_list_combo), store);
+		gtk_combo_box_set_model (GTK_COMBO_BOX(fun_config_browser_list_combo), store);
 		gtk_combo_box_set_active (GTK_COMBO_BOX(fun_config_browser_list_combo), i);
+		g_list_free (browsers);
 	}
 	else
 	{
