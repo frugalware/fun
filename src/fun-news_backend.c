@@ -196,7 +196,8 @@ fun_populate_existing_news_list (void)
 		}
 	}
 	fclose (fp);
-	
+	e_news_item_list = g_list_reverse (e_news_item_list);
+
 	return;
 }
 
@@ -513,7 +514,6 @@ fun_news_backend_init (void)
 	/* populate the existing list of news items
 	 * stored on disk */
 	fun_populate_existing_news_list ();
-	e_news_item_list = g_list_reverse (e_news_item_list);
 
 	return;
 }

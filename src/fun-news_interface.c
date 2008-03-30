@@ -88,8 +88,7 @@ fun_news_interface_init (void)
 	/* the news check timeout */
 	seconds += 60;
 	g_timeout_add_seconds (seconds, (GSourceFunc)fun_news_check_func, NULL);
-	//fun_news_check_func ();
-	
+
 	return;
 }
 
@@ -177,8 +176,12 @@ fun_news_check_func (void)
 	}
 	if (lastitem)
 	{
+		/* re-populate the existing list */
+		fun_populate_existing_news_list ();
+		/* display a notification */
 		fun_tooltip_set_text (_("Latest News"), lastitem->title);
 		fun_tooltip_show (icon);
+		fun_news_interface_populate_newslist ();
 	}
 	return TRUE;
 }
