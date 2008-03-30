@@ -253,7 +253,9 @@ cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data)
 		fun_config_save ();
 		restart = TRUE;
 	}
-	
+	/* browser settings */	
+	fun_config_set_value_string ("news_browser", gtk_combo_box_get_active_text(GTK_COMBO_BOX(fun_config_browser_list_combo)));
+	/* check if a restart is needed */
 	if (restart)
 	{
 		if (fun_question(_("Restart Fun"),
@@ -262,6 +264,7 @@ cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data)
 			fun_restart ();
 		}
 	}
+
 	fun_config_save ();
 	gtk_widget_hide (fun_config_dlg);
 	
