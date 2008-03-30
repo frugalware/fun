@@ -61,9 +61,9 @@ char *
 fun_config_get_value_string (const char *key)
 {
 	char *ret = NULL;
-	
+
 	ret = cfg_get_key_value (conf, (char*)key);
-	
+
 	return ret;
 }
 
@@ -71,9 +71,9 @@ int
 fun_config_get_value_int (const char *key)
 {
 	int ret = -1;
-	
+
 	ret = atoi (cfg_get_key_value (conf, (char*)key));
-	
+
 	return ret;
 }
 

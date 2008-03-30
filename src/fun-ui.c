@@ -48,7 +48,9 @@ static GdkPixbuf		*fun_about_pixbuf = NULL;
 static GtkWidget		*fun_config_dlg = NULL;
 static GtkWidget		*fun_config_gfpm_launcher_combo = NULL;
 static GtkAdjustment 		*fun_config_upd_int_adj = NULL;
+static GtkAdjustment 		*fun_config_news_int_adj = NULL;
 static GtkAdjustment		*fun_config_not_tim_adj = NULL;
+static GtkWidget		*fun_config_news_chkbtn = NULL;
 static gboolean			connected = FALSE;
 
 /* credits */
@@ -178,8 +180,13 @@ cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data)
 {
 	GtkAdjustment 		*adj = NULL;
 	guint			interval = 0;
+	guint			ninterval = 0;
 	guint			old_interval = 0;
+	guint			old_ninterval = 0;
 	gint			sel = 0;
+	gboolean		restart = FALSE;
+	gboolean		old_news_enabled = FALSE;
+	gboolean		new_news_enabled = FALSE;
 	
 	/* gfpm_launcher setting */
 	switch (gtk_combo_box_get_active(GTK_COMBO_BOX(fun_config_gfpm_launcher_combo)))
@@ -204,7 +211,7 @@ cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data)
 	fun_config_save ();
 	
 	/* update_interval setting */
-	adj = gtk_spin_button_get_adjustment (GTK_SPIN_BUTTON(data));
+	adj = fun_config_upd_int_adj;
 	interval = gtk_adjustment_get_value (adj);
 	old_interval = fun_config_get_value_int ("update_interval");
 	/* if interval is changed, save the new interval value to .funrc and prompt
@@ -215,13 +222,45 @@ cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data)
 	{
 		fun_config_set_value_int ("update_interval", interval);
 		fun_config_save ();
+		restart = TRUE;
+	}
+	/* news interval setting */
+	adj = fun_config_news_int_adj;
+	ninterval = gtk_adjustment_get_value (adj);
+	old_ninterval = fun_config_get_value_int ("news_interval");
+	/* if interval is changed, save the new interval value to .funrc and prompt
+	 * the user to restart fun */
+	/* TODO: same as above */
+	if (old_ninterval != ninterval)
+	{
+		fun_config_set_value_int ("news_interval", ninterval);
+		fun_config_save ();
+		restart = TRUE;
+	}
+	/* news enabled/disabled setting */
+	new_news_enabled = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(fun_config_news_chkbtn));
+	if (!strcmp(fun_config_get_value_string("news_enabled"),"true"))
+	{
+		old_news_enabled = TRUE;
+	}
+	if (old_news_enabled != new_news_enabled)
+	{
+		if (new_news_enabled)
+			fun_config_set_value_string ("news_enabled", "true");
+		else
+			fun_config_set_value_string ("news_enabled", "false");
+		fun_config_save ();
+		restart = TRUE;
+	}
+	
+	if (restart)
+	{
 		if (fun_question(_("Restart Fun"),
 				_("Fun needs to be restarted in order for the changes to take effect. Do you want to restart Fun now ?")) == GTK_RESPONSE_YES)
 		{
 			fun_restart ();
 		}
 	}
-	
 	fun_config_save ();
 	gtk_widget_hide (fun_config_dlg);
 	
@@ -260,8 +299,10 @@ fun_config_dialog_show (void)
 	if (!GTK_WIDGET_VISIBLE(fun_config_dlg))
 	{
 		gtk_adjustment_set_value (fun_config_upd_int_adj, fun_config_get_value_int("update_interval"));
+		gtk_adjustment_set_value (fun_config_news_int_adj, fun_config_get_value_int("news_interval"));
 		gtk_adjustment_set_value (fun_config_not_tim_adj, fun_config_get_value_int("notification_timeout"));
 		char *gfpm_launcher = fun_config_get_value_string("gfpm_launcher");
+		char *news_enabled = fun_config_get_value_string("news_enabled");
 		if (!(strcmp(gfpm_launcher, "sudo")))
 			gtk_combo_box_set_active (GTK_COMBO_BOX(fun_config_gfpm_launcher_combo), 2);
 		else
@@ -274,6 +315,14 @@ fun_config_dialog_show (void)
 			gtk_combo_box_set_active (GTK_COMBO_BOX(fun_config_gfpm_launcher_combo), -1);
 		gtk_widget_show (fun_config_dlg);
 		gtk_window_present (GTK_WINDOW(fun_config_dlg));
+		if (!(strcmp(news_enabled, "true")))
+		{
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(fun_config_news_chkbtn), TRUE);
+		}
+		else
+		{
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(fun_config_news_chkbtn), FALSE);
+		}
 	}
 	else
 	{
@@ -288,8 +337,10 @@ fun_config_dialog_init (void)
 {
 	fun_config_dlg = glade_xml_get_widget (xml, "fun_config_dlg");
 	fun_config_gfpm_launcher_combo = glade_xml_get_widget (xml, "fun_config_su");
-	fun_config_upd_int_adj = gtk_spin_button_get_adjustment (glade_xml_get_widget(xml,"interval_spbtn"));
-	fun_config_not_tim_adj = gtk_spin_button_get_adjustment (glade_xml_get_widget(xml,"notification_time_spbtn"));
+	fun_config_news_chkbtn = glade_xml_get_widget (xml, "news_enabled_chkbtn");
+	fun_config_upd_int_adj = gtk_spin_button_get_adjustment (GTK_SPIN_BUTTON(glade_xml_get_widget(xml,"interval_spbtn")));
+	fun_config_not_tim_adj = gtk_spin_button_get_adjustment (GTK_SPIN_BUTTON(glade_xml_get_widget(xml,"notification_time_spbtn")));
+	fun_config_news_int_adj = gtk_spin_button_get_adjustment (GTK_SPIN_BUTTON(glade_xml_get_widget(xml,"news_interval_spbtn")));
 	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"pref_closebtn")),
 					"clicked",
 					G_CALLBACK(cb_fun_config_dlg_close_clicked),
