@@ -5,11 +5,17 @@
 #include <stdbool.h>
 #include "wejpconfig.h"
 
+/* Returns a GList of available browsers on the system */
+GList* fun_config_get_available_browsers (void);
+
+/* Returns a string representing the absolute path of a browser */
+char* fun_config_get_browser_path (const char *name);
+
 /* Returns true if file exists otherwise false */
 bool fun_config_exists (void);
 
 /* Parse config file and set the initial config values */
-bool fun_config_init (void);
+void fun_config_init (void);
 
 /* Save current settings back to funrc */
 void fun_config_save (void);

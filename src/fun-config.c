@@ -27,13 +27,62 @@
 #include "fun-config.h"
 
 #define CONFIG_FILE ".funrc"
+#define UPDATE_INTERVAL_DEFAULT		"60"
+#define NEWS_INTERVAL_DEFAULT		"30"
+#define NOTIFICATION_TIMEOUT_DEFAULT	"5"
+#define GFPM_LAUNCHER_DEFAULT		"sudo"
 
 static ConfigFile conf;
 
-bool
+static gchar *browserlist[] = 	{	"Firefox",	"/usr/bin/firefox",
+					"Epiphany",	"/usr/bin/epiphany",
+					"Opera",	"/usr/bin/opera",
+					"Konqueror",	"/usr/bin/konqueror",
+					NULL
+				};
+
+GList*
+fun_config_get_available_browsers (void)
+{
+	guint	i = 0;
+	GList	*ret = NULL;
+	
+	while (browserlist[i] != NULL)
+	{
+		if (g_file_test(browserlist[++i],G_FILE_TEST_EXISTS))
+			ret = g_list_append (ret, g_strdup(browserlist[--i]));
+		i+=2;
+	}
+	
+	return ret;
+}
+
+char*
+fun_config_get_browser_path (const char *name)
+{
+	char	*ret = NULL;
+	GList	*browsers = NULL;
+	
+	while (browsers != NULL)
+	{
+		if (!strcmp((char*)browsers->data,name))
+		{
+			browsers = browsers->next;
+			ret = g_strdup (browsers->data);
+		}
+		browsers = browsers->next;
+	}
+	g_list_free (browsers);
+
+	return ret;
+}
+
+void
 fun_config_init (void)
 {
-	char *rcfile = NULL;
+	char	*rcfile = NULL;
+	gchar	*browser = NULL;
+	GList	*browsers = NULL;
 
 	cfg_init_config_file_struct (&conf);
 	cfg_add_key (&conf, "update_interval", "60");
@@ -41,20 +90,39 @@ fun_config_init (void)
 	cfg_add_key (&conf, "gfpm_launcher", "sudo");
 	cfg_add_key (&conf, "news_enabled", "true");
 	cfg_add_key (&conf, "news_interval", "30");
+
+	/* set the default browser */
+	browsers = fun_config_get_available_browsers ();
+	if (browsers != NULL)
+	{
+		browser = g_strdup_printf (browsers->data);
+		cfg_add_key (&conf, "news_browser", browser);
+		g_list_free (browsers);
+	}
 	rcfile = cfg_get_path_to_config_file (CONFIG_FILE);
 	if (cfg_read_config_file (&conf, rcfile) != 0)
 	{
-		fun_config_save ();
-		g_free (rcfile);
-		return false;
+		goto cleanup;
 	}
 	else
 	{
-		g_free (rcfile);
-		return true;
+		if (!fun_config_get_value_int("update_interval"))
+			cfg_add_key (&conf, "update_interval", UPDATE_INTERVAL_DEFAULT);
+		if (!fun_config_get_value_int("news_interval"))
+			cfg_add_key (&conf, "news_interval", NEWS_INTERVAL_DEFAULT);
+		if (!fun_config_get_value_int("notification_timeout"))
+			cfg_add_key (&conf, "notification_timeout", NOTIFICATION_TIMEOUT_DEFAULT);
+		if (!fun_config_get_value_string("gfpm_launcher"))
+			cfg_add_key (&conf, "gfpm_launcher", GFPM_LAUNCHER_DEFAULT);
+		if (!fun_config_get_value_string("news_browser") && browser!=NULL)
+			cfg_add_key (&conf, "news_browser", browser);	
 	}
+	cleanup:
+	fun_config_save ();
+	g_free (rcfile);
+	g_free (browser);
 
-	return false;
+	return;
 }
 
 char *
