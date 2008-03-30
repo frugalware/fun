@@ -20,6 +20,38 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [needed for bindtextdoma
 AM_GLIB_GNU_GETTEXT
 AM_GLIB_DEFINE_LOCALEDIR(LOCALEDIR)
 
+AC_ARG_ENABLE(werror,
+			  AC_HELP_STRING([  --enable-werror], [Enable -werror
+							  usage]), [werror="yes"])
+AC_ARG_ENABLE(debug,
+			  AC_HELP_STRING([  --enable-debug], [Enable debugging
+							  support]), [debug="yes"])
+
+dnl Check for -werror usage
+AC_MSG_CHECKING(for werror usage)
+if test "x$werror" = "xyes" ; then
+	CFLAGS="${CFLAGS} -Werror"
+	werror=yes
+	AC_MSG_RESULT(yes)
+else
+	werror=no
+	AC_MSG_RESULT(no)
+fi
+
+dnl Check if debug is enabled
+AC_MSG_CHECKING(for debug support)
+if test "x$debug" = "xyes" ; then
+	AC_DEFINE(FUN_DEBUG, 1, [Debug support: enabled])
+	CFLAGS="${CFLAGS} -ggdb3 -Wall -DFUN_DEBUG"
+	debug=yes
+	AC_MSG_RESULT(yes)
+else
+	AC_DEFINE(FUN_DEBUG, 0, [Debug support: disabled])
+	debug=no
+	AC_MSG_RESULT(no)
+fi
+
+AC_SUBST([FUN_DEBUG])
 AC_PATH_PROG(DBUSBINDINGTOOL, dbus-binding-tool, no)
 
 if test "x$DBUSBINDINGTOOL" = "xno"; then
@@ -65,4 +97,6 @@ FUN $VERSION configuration summary:
         source code location     : ${srcdir}
         compiler                 : ${CC}
         compiler flags           : ${CFLAGS}
+        debug support            : ${debug}
+        werror support           : ${werror}
 "
