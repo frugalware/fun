@@ -85,7 +85,7 @@ fun_compare_lists (GList *oldlist, GList *newlist)
 		found = g_list_find_custom (oldlist, ni, fun_newslist_compare_func);
 		if (found == NULL)
 		{
-			g_print ("LATEST: %d\n", ni->id);
+			//g_print ("LATEST: %d\n", ni->id);
 			ret = g_list_append (ret, ni);
 		}
 		
@@ -243,7 +243,7 @@ fun_save_news_to_file (NewsItem *item)
 		return -1;
 	npath = g_strdup_printf ("%s/%d", NEWS_ITEM_DIR, item->id);
 	path = cfg_get_path_to_config_file (npath);
-	g_print ("%s\n", path);
+	//g_print ("%s\n", path);
 	fp = fopen (path, "w");
 	if (fp == NULL)
 	{
@@ -336,7 +336,7 @@ processNode (xmlTextReaderPtr *reader)
 			if (strlen(temp)>5)
 			{
 				sprintf (newsitem->title, temp);
-				printf ("Title: %s\n", temp);
+				//printf ("Title: %s\n", temp);
 				g_free (temp);
 			}
 		}
@@ -354,7 +354,7 @@ processNode (xmlTextReaderPtr *reader)
 			if (strlen(temp)>5)
 			{
 				newsitem->id = fun_get_news_id_from_url (temp);
-				printf ("ID: %d\n", newsitem->id);
+				//printf ("ID: %d\n", newsitem->id);
 				g_free (temp);
 			}
 		}
@@ -375,7 +375,7 @@ processNode (xmlTextReaderPtr *reader)
 			if (strlen(temp)>5)
 			{
 				newsitem->description = temp;
-				printf ("Description: %.40s...\n\n\n", temp);
+				//printf ("Description: %.40s...\n\n\n", temp);
 			}
 		}
 		
