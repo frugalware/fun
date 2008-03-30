@@ -39,6 +39,8 @@ fun_config_init (void)
 	cfg_add_key (&conf, "update_interval", "60");
 	cfg_add_key (&conf, "notification_timeout", "5");
 	cfg_add_key (&conf, "gfpm_launcher", "sudo");
+	cfg_add_key (&conf, "news_enabled", "true");
+	cfg_add_key (&conf, "news_interval", "30");
 	rcfile = cfg_get_path_to_config_file (CONFIG_FILE);
 	if (cfg_read_config_file (&conf, rcfile) != 0)
 	{
