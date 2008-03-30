@@ -26,7 +26,7 @@
 #include <gtk/gtk.h>
 #include "fun-config.h"
 
-#define CONFIG_FILE ".funrc"
+#define CONFIG_FILE			".funrc"
 #define UPDATE_INTERVAL_DEFAULT		"60"
 #define NEWS_INTERVAL_DEFAULT		"30"
 #define NOTIFICATION_TIMEOUT_DEFAULT	"5"

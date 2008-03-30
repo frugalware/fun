@@ -47,6 +47,7 @@ static GtkWidget		*fun_check_btn = NULL;
 static GdkPixbuf		*fun_about_pixbuf = NULL;
 static GtkWidget		*fun_config_dlg = NULL;
 static GtkWidget		*fun_config_gfpm_launcher_combo = NULL;
+static GtkWidget		*fun_config_browser_list_combo = NULL;
 static GtkAdjustment 		*fun_config_upd_int_adj = NULL;
 static GtkAdjustment 		*fun_config_news_int_adj = NULL;
 static GtkAdjustment		*fun_config_not_tim_adj = NULL;
@@ -296,13 +297,21 @@ fun_restart (void)
 static void
 fun_config_dialog_show (void)
 {
+	char 		*gfpm_launcher = NULL;
+	char		*news_enabled = NULL;
+	GList		*browsers = NULL;
+	GtkListStore	*store = NULL;
+	GtkTreeIter	iter;
+	guint		i = 0;
+	gboolean	flag = FALSE;
+
 	if (!GTK_WIDGET_VISIBLE(fun_config_dlg))
 	{
 		gtk_adjustment_set_value (fun_config_upd_int_adj, fun_config_get_value_int("update_interval"));
 		gtk_adjustment_set_value (fun_config_news_int_adj, fun_config_get_value_int("news_interval"));
 		gtk_adjustment_set_value (fun_config_not_tim_adj, fun_config_get_value_int("notification_timeout"));
-		char *gfpm_launcher = fun_config_get_value_string("gfpm_launcher");
-		char *news_enabled = fun_config_get_value_string("news_enabled");
+		gfpm_launcher = fun_config_get_value_string("gfpm_launcher");
+		news_enabled = fun_config_get_value_string("news_enabled");
 		if (!(strcmp(gfpm_launcher, "sudo")))
 			gtk_combo_box_set_active (GTK_COMBO_BOX(fun_config_gfpm_launcher_combo), 2);
 		else
@@ -323,6 +332,23 @@ fun_config_dialog_show (void)
 		{
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(fun_config_news_chkbtn), FALSE);
 		}
+		/* populate the browser list combo */
+		store = GTK_LIST_STORE (gtk_combo_box_get_model(GTK_COMBO_BOX(fun_config_browser_list_combo)));
+		gtk_list_store_clear (store);
+		browsers = fun_config_get_available_browsers ();
+		while (browsers != NULL)
+		{
+			char *b = fun_config_get_value_string ("news_browser");
+			if (!strcmp(b,(char*)browsers->data))
+				flag = TRUE;
+			if (!flag)
+				i++;
+			gtk_list_store_append (store, &iter);
+			gtk_list_store_set (store, &iter, 0, browsers->data, -1);
+			browsers = g_list_next (browsers);
+		}
+		//gtk_combo_box_set_model (GTK_COMBO_BOX(fun_config_browser_list_combo), store);
+		gtk_combo_box_set_active (GTK_COMBO_BOX(fun_config_browser_list_combo), i);
 	}
 	else
 	{
@@ -335,12 +361,23 @@ fun_config_dialog_show (void)
 static void
 fun_config_dialog_init (void)
 {
+	GtkListStore	*store = NULL;
+	GtkCellRenderer *renderer = NULL;
+
 	fun_config_dlg = glade_xml_get_widget (xml, "fun_config_dlg");
 	fun_config_gfpm_launcher_combo = glade_xml_get_widget (xml, "fun_config_su");
 	fun_config_news_chkbtn = glade_xml_get_widget (xml, "news_enabled_chkbtn");
 	fun_config_upd_int_adj = gtk_spin_button_get_adjustment (GTK_SPIN_BUTTON(glade_xml_get_widget(xml,"interval_spbtn")));
 	fun_config_not_tim_adj = gtk_spin_button_get_adjustment (GTK_SPIN_BUTTON(glade_xml_get_widget(xml,"notification_time_spbtn")));
 	fun_config_news_int_adj = gtk_spin_button_get_adjustment (GTK_SPIN_BUTTON(glade_xml_get_widget(xml,"news_interval_spbtn")));
+	/* setup the browser list comobo box */
+	store = gtk_list_store_new (1, G_TYPE_STRING);
+	fun_config_browser_list_combo = glade_xml_get_widget (xml, "fun_config_browserlist");
+	gtk_combo_box_set_model (GTK_COMBO_BOX(fun_config_browser_list_combo), GTK_TREE_MODEL(store));
+	renderer = gtk_cell_renderer_text_new ();
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT(fun_config_browser_list_combo), renderer, TRUE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT(fun_config_browser_list_combo), renderer, "text", 0, NULL);
+	/* the signal */
 	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"pref_closebtn")),
 					"clicked",
 					G_CALLBACK(cb_fun_config_dlg_close_clicked),
@@ -417,10 +454,6 @@ fun_main_window_init (void)
 						G_CALLBACK(fun_config_dialog_show),
 						NULL);
 	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"button_close")),
-						"clicked",
-						G_CALLBACK(fun_main_window_hide),
-						NULL);
-	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"button_main_close")),
 						"clicked",
 						G_CALLBACK(fun_main_window_hide),
 						NULL);
