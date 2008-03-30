@@ -88,7 +88,7 @@ fun_news_interface_init (void)
 	/* the news check timeout */
 	seconds += 60;
 	g_timeout_add_seconds (seconds, (GSourceFunc)fun_news_check_func, NULL);
-	fun_news_check_func ();
+	//fun_news_check_func ();
 	
 	return;
 }
@@ -163,7 +163,7 @@ fun_news_check_func (void)
 {
 	GList		*latest = NULL;
 	NewsItem	*lastitem = NULL;
-	
+
 	/* see if updates are available */
 	latest = fun_compare_lists (fun_get_existing_news_list(), fun_get_new_news_list());
 	while (latest != NULL)

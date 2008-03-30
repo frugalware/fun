@@ -85,7 +85,6 @@ fun_compare_lists (GList *oldlist, GList *newlist)
 		found = g_list_find_custom (oldlist, ni, fun_newslist_compare_func);
 		if (found == NULL)
 		{
-			//g_print ("LATEST: %d\n", ni->id);
 			ret = g_list_append (ret, ni);
 		}
 		
@@ -188,7 +187,6 @@ fun_populate_existing_news_list (void)
 		{
 			path = g_strdup_printf ("%s/%s", NEWS_ITEM_DIR, line);
 			npath = cfg_get_path_to_config_file (path);
-			//g_print ("Getting for %s\n", npath);
 			item = fun_get_news_item_from_file (npath);
 			item->id = atoi (line);
 			g_free (path);
@@ -243,7 +241,6 @@ fun_save_news_to_file (NewsItem *item)
 		return -1;
 	npath = g_strdup_printf ("%s/%d", NEWS_ITEM_DIR, item->id);
 	path = cfg_get_path_to_config_file (npath);
-	//g_print ("%s\n", path);
 	fp = fopen (path, "w");
 	if (fp == NULL)
 	{
@@ -278,7 +275,6 @@ fun_get_news_id_from_url (const char *url)
 	char *bk = tp;
 	char *ptr = NULL;
 	char id[4] = "";
-	
 	tp = g_strreverse (tp);
 	ptr = id;
 	while (*tp != '/')
@@ -426,7 +422,6 @@ fun_parse_news_xml (const char *filename)
 	}
 	news_item_list = g_list_reverse (news_item_list);
 	path = cfg_get_path_to_config_file (NEWS_ITEM_LIST);
-	g_print (path);
 	if (g_file_test(path,G_FILE_TEST_EXISTS)==FALSE)
 	{
 		GList *templist = NULL;
