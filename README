@@ -4,6 +4,11 @@ FUN a.k.a Frugalware Update Notifier
 FUN is a client-server application with a sole purpose of notifying the 
 user of new package updates.
 
+Note: As of version 0.3.0, FUN is now also capable of displaying notifications
+when some news is available on the frugalware.org website. So, FUN is no longer
+just an update notifier, but a news notifier too. Future versions will also
+support notifications when a security fix is released.
+
 fund (fun daemon) runs in the background waiting for commands from the
 client. The fun client is a small application that resides in the user's 
 system tray and periodically sends certain commands to the fun daemon to get
@@ -22,7 +27,9 @@ Requirements
 * dbus-glib >= 0.73
 * gtk+2 >= 2.12.0
 * libglade-2.0 >= 2.6
-* libnotify >= 0.4.4 
+* libnotify >= 0.4.4
+* libcurl
+* libxml-2.0
 
 Using FUN
 =========
@@ -46,7 +53,7 @@ three configuration options:
 
 	This specifies the time in minutes after which FUN should check for
 	package updates.
-	For eg: If you want FUN to check for new updates every hour, you
+	Example: If you want FUN to check for new updates every hour, you
 	should set update_interval=60 in the configuration file.
 
 2)	notification_timeout
@@ -73,7 +80,32 @@ three configuration options:
 	kdesu
 	sudo
 
-	For eg: gfpm_launcher=gksu  (If you're using GNOME/XFCE)
+	Example: gfpm_launcher=gksu  (If you're using GNOME/XFCE)
+
+4)	news_enabled
+
+	If set to true, FUN will also notify the user in case of a new News entry
+	is available on the frugalware.org homepage.
+	News notification will be disabled if this is set to false.
+	
+	Example: news_enabled=true
+
+5)	news_interval
+
+	This specifies the time in minutes after which FUN should check for
+	news updates on frugalware.org. This setting has no effect if 
+	news_enabled is set to false.
+	Example: If you want FUN to check for new NEWS updates every hour, you
+	should set news_interval=60 in the configuration file.
+
+6)	news_browser
+
+	This setting sets the default browser to be used when the user clicks
+	"Visit Link" on a news item.
+	Supported browsers are: Firefox, Epiphany, Opera, Konqueror
+	
+	Example: news_browser=Firefox
+	
 
 
 For Developers
