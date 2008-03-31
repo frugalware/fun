@@ -61,18 +61,17 @@ char*
 fun_config_get_browser_path (const char *name)
 {
 	char	*ret = NULL;
-	GList	*browsers = NULL;
-	
-	while (browsers != NULL)
+	guint	i = 0;
+
+	while (browserlist[i] != NULL)
 	{
-		if (!strcmp((char*)browsers->data,name))
+		if (!strcmp(browserlist[0],name))
 		{
-			browsers = browsers->next;
-			ret = g_strdup (browsers->data);
+			ret = g_strdup (browserlist[++i]);
+			break;
 		}
-		browsers = browsers->next;
+		i+=2;
 	}
-	g_list_free (browsers);
 
 	return ret;
 }
