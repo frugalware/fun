@@ -34,6 +34,7 @@ extern GtkStatusIcon	*icon;
 
 static GtkWidget	*fun_news_tvw = NULL;
 static GtkWidget	*fun_news_txtvw = NULL;
+static GtkWidget	*fun_news_visitlink_btn = NULL;
 
 static void fun_news_interface_populate_newslist (void);
 static void fun_news_interface_display_news_for_id (guint id);
@@ -42,6 +43,7 @@ static gboolean fun_news_check_func (void);
 
 /* CALLBACKS */
 static void cb_fun_news_tvw_selected (GtkTreeSelection *selection, gpointer data);
+static void cb_fun_news_visit_link_clicked (GtkButton *button, gpointer data);
 
 void
 fun_news_interface_init (void)
@@ -54,6 +56,7 @@ fun_news_interface_init (void)
 
 	fun_news_tvw = glade_xml_get_widget (xml, "fun_news_treeview");
 	fun_news_txtvw = glade_xml_get_widget (xml, "fun_news_textview");
+	fun_news_visitlink_btn = glade_xml_get_widget (xml, "fun_visitlink_btn");
 
 	store = gtk_list_store_new (2,
 				G_TYPE_UINT,		/* News ID */
@@ -80,6 +83,7 @@ fun_news_interface_init (void)
 	gtk_tree_view_set_model (GTK_TREE_VIEW(fun_news_tvw), GTK_TREE_MODEL(store));
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(fun_news_tvw));
 	g_signal_connect (selection, "changed", G_CALLBACK(cb_fun_news_tvw_selected), NULL);
+	g_signal_connect (fun_news_visitlink_btn, "clicked", G_CALLBACK(cb_fun_news_visit_link_clicked), NULL);
 	
 	fun_news_interface_populate_newslist ();
 	/* fetch latest news xml 1 minute earlier than the check */
@@ -202,5 +206,28 @@ cb_fun_news_tvw_selected (GtkTreeSelection *selection, gpointer data)
 	return;
 }
 
+static void
+cb_fun_news_visit_link_clicked (GtkButton *button, gpointer data)
+{
+	GtkTreeSelection	*selection;
+	GtkTreeModel		*model;
+	GtkTreeIter		iter;
+	guint			id = 0;
+
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(fun_news_tvw));
+	if (gtk_tree_selection_get_selected(selection, &model, &iter))
+	{
+		char *command = NULL;
+		gtk_tree_model_get (model, &iter, 0, &id, -1);
+		command = g_strdup_printf ("%s %s",
+					fun_config_get_browser_path(fun_config_get_value_string("news_browser")),
+					fun_news_get_url_for_id (id));
+		g_print ("%s\n", command);
+		system (command);
+		g_free (command);
+	}
+
+	return;
+}
 
 

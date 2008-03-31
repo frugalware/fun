@@ -27,5 +27,7 @@ int fun_save_news_to_file (NewsItem *item);
 
 GList* fun_compare_lists (GList *oldlist, GList *newlist);
 
+char* fun_get_news_url_for_id (guint id);
+
 #endif
 

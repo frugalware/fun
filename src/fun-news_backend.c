@@ -540,4 +540,28 @@ fun_get_new_news_list (void)
 	return news_item_list;
 }
 
+/**
+ * fun_get_news_url_for_id:
+ *
+ * Returns a string representing the news URL (return value must not be freed)
+ */
+char*
+fun_news_get_url_for_id (guint id)
+{
+	GList		*list = NULL;
+	NewsItem 	*i = NULL;
+	
+	list = e_news_item_list;
+	while (list != NULL)
+	{
+		i = NULL;
+		i = list->data;
+		if (id == i->id)
+			break;
+	}
+	if (i != NULL)
+		return g_strdup_printf ("http://frugalware.org/news/%d", i->id);
+
+	return NULL;
+}
 
