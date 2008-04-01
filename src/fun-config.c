@@ -65,12 +65,12 @@ fun_config_get_browser_path (const char *name)
 
 	while (browserlist[i] != NULL)
 	{
-		if (!strcmp(browserlist[0],name))
+		if (!strcmp(browserlist[i],name))
 		{
 			ret = g_strdup (browserlist[++i]);
 			break;
 		}
-		i+=2;
+		i++;
 	}
 
 	return ret;

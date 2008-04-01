@@ -558,6 +558,7 @@ fun_news_get_url_for_id (guint id)
 		i = list->data;
 		if (id == i->id)
 			break;
+		list = list->next;
 	}
 	if (i != NULL)
 		return g_strdup_printf ("http://frugalware.org/news/%d", i->id);
