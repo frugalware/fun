@@ -9,8 +9,9 @@
 /* the News item structure */
 typedef struct _newsitem {
 	guint	id;
-	char	title[255];
+	char	title[256];
 	char	*description;
+	char	date[256];
 } NewsItem;
 
 void fun_news_backend_init (void);

@@ -141,17 +141,16 @@ fun_get_news_item_from_file (const char *file)
 		return NULL;
 	ni = (NewsItem*) malloc (sizeof(NewsItem));
 	memset (ni, 0, sizeof(NewsItem));
+	/* get the title */
+	if (fgets(line,PATH_MAX,fp))
+		sprintf (ni->title, line);
+	/* get the publish date */
+	if (fgets(line,PATH_MAX,fp))
+		sprintf (ni->date, line);
+	
 	while (fgets(line,PATH_MAX,fp))
 	{
-		if (!found)
-		{
-			sprintf (ni->title, line);
-			found = TRUE;
-		}
-		else
-		{
-			dsclist = g_list_append (dsclist, g_strdup(line));
-		}
+		dsclist = g_list_append (dsclist, g_strdup(line));
 		memset (line, 0, sizeof(line));
 	}
 	ni->description = fun_glist_to_string (dsclist);
@@ -254,6 +253,7 @@ fun_save_news_to_file (NewsItem *item)
 		return -1;
 	}
 	fprintf (fp, "%s\n", item->title);
+	fprintf (fp, "%s\n", item->date);
 	fprintf (fp, "%s\n", item->description);
 	fclose (fp);
 	g_free (path);
@@ -377,8 +377,26 @@ processNode (xmlTextReaderPtr *reader)
 		}
 		
 		/* Skip content:encoded description, pubdate etc */
-		for (i=0;i<10;i++) xmlTextReaderRead ((*reader));
+		for (i=0;i<4;i++) xmlTextReaderRead ((*reader));
+		
+		/* Process PubDate */
+		for (i=0;i<4;i++) xmlTextReaderRead ((*reader));
+		value = xmlTextReaderConstValue((*reader));
 
+		if (value == NULL)
+			return;
+		else
+		{
+			temp = g_strdup (value);
+   		 	g_strstrip (temp);
+			if (strlen(temp)>5)
+			{
+				strncpy (newsitem->date, temp, strlen(temp));
+				//printf ("Date: %.s\n\n\n", temp);
+			}
+		}
+		
+		for (i=0;i<2;i++) xmlTextReaderRead ((*reader));
 		news_item_list = g_list_append (news_item_list, (gpointer)newsitem);
 	}
 
