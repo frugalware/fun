@@ -212,8 +212,29 @@ fun_add_entry_to_newslist (gint id)
 {
 	FILE *fp = NULL;
 	char *path = NULL;
+	char line[PATH_MAX+1];
+	int temp;
 	
 	path = cfg_get_path_to_config_file (NEWS_ITEM_LIST);
+	fp = fopen (path, "r");
+	if (fp != NULL)
+	{
+		/* check if the id is already present */
+		while (fgets(line,PATH_MAX,fp))
+		{
+			/* this needs to be changed after news items exceed 99 */
+			line[2] = 0;
+			temp = atoi (line);
+			printf ("%d checking \n", temp);
+			if (temp == id)
+			{
+				printf ("%d is already present\n", id);
+				return -1;
+			}
+		}
+		fclose (fp);
+	}
+	/* good, now add it */
 	if (!(fp=fopen(path,"a")))
 		return -1;
 	fprintf (fp, "%d\n", id);
