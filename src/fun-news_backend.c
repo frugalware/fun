@@ -262,17 +262,19 @@ fun_save_news_to_file (NewsItem *item)
 		return -1;
 	npath = g_strdup_printf ("%s/%d", NEWS_ITEM_DIR, item->id);
 	path = cfg_get_path_to_config_file (npath);
+	
+	if (fun_add_entry_to_newslist(item->id)!=0)
+	{
+		g_print ("couldn't add to new list\n");
+		return -1;
+	}
 	fp = fopen (path, "w");
 	if (fp == NULL)
 	{
 		g_print ("Error opening news file\n");
 		return -1;
 	}
-	if (fun_add_entry_to_newslist(item->id)!=0)
-	{
-		g_print ("Couldnt add to new list\n");
-		return -1;
-	}
+	printf ("saving news with id: %d\n", item->id);
 	fprintf (fp, "%s\n", item->title);
 	fprintf (fp, "%s\n", item->date);
 	fprintf (fp, "%s\n", item->description);
