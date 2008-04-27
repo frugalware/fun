@@ -299,7 +299,7 @@ fun_get_news_id_from_url (const char *url)
 	char id[4] = "";
 	tp = g_strreverse (tp);
 	ptr = id;
-	while (*tp != '/')
+	while (*tp != NULL && *tp != '/')
 		*ptr++ = *tp++;
 	*ptr++ = 0;
 	g_free (bk);

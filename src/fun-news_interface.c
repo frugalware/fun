@@ -58,9 +58,10 @@ fun_news_interface_init (void)
 	fun_news_txtvw = glade_xml_get_widget (xml, "fun_news_textview");
 	fun_news_visitlink_btn = glade_xml_get_widget (xml, "fun_visitlink_btn");
 
-	store = gtk_list_store_new (2,
+	store = gtk_list_store_new (3,
 				G_TYPE_UINT,		/* News ID */
-				G_TYPE_STRING);  	/* News Title */
+				G_TYPE_STRING,		/* News Title */
+				G_TYPE_STRING);  	/* News Date */
 
 	renderer = gtk_cell_renderer_text_new ();
 	column = gtk_tree_view_column_new_with_attributes (_("ID"),
@@ -80,6 +81,16 @@ fun_news_interface_init (void)
 	gtk_tree_view_column_set_expand (column, TRUE);
 	gtk_tree_view_column_set_min_width (column, 80);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(fun_news_tvw), column);
+	
+	renderer = gtk_cell_renderer_text_new ();
+	column = gtk_tree_view_column_new_with_attributes (_("Date"),
+							renderer,
+							"text", 2,
+							NULL);
+	gtk_tree_view_column_set_resizable (column, FALSE);
+	gtk_tree_view_column_set_expand (column, FALSE);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(fun_news_tvw), column);
+
 	gtk_tree_view_set_model (GTK_TREE_VIEW(fun_news_tvw), GTK_TREE_MODEL(store));
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW(fun_news_tvw));
 	g_signal_connect (selection, "changed", G_CALLBACK(cb_fun_news_tvw_selected), NULL);
