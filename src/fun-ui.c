@@ -483,7 +483,7 @@ fun_init_thread (void *ptr)
 	
 	if (fun_dbus_perform_service (TEST_SERVICE, NULL, NULL, NULL) == FALSE)
 	{
-		g_error (_("Failed to connect to the fun daemon\n"));
+		fun_error (_("Connection Failed"), _("Failed to connect to the fun daemon\n"));
 		//fun_tooltip_set_text2 (tooltip, _("Not connected to fun daemon"), FALSE);
 		connected = FALSE;
 		/* set the status */
