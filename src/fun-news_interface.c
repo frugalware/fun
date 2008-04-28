@@ -120,12 +120,15 @@ fun_news_interface_populate_newslist (void)
 	{
 		NewsItem	*item = NULL;
 		char		title[255] = "";
+		char		date[255] = "";
 		
 		item = (NewsItem*) list->data;
 		strcpy (title, item->title);
 		g_strstrip (title);
+		strcpy (date, item->date);
+		g_strstrip (date);
 		gtk_list_store_append (store, &iter);
-		gtk_list_store_set (store, &iter, 0, item->id, 1, g_strdelimit(title,"\n",0), -1);
+		gtk_list_store_set (store, &iter, 0, item->id, 1, g_strdelimit(title,"\n",0), 2, date, -1);
 		list = g_list_next (list);
 	}
 
