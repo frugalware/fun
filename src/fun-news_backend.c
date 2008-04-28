@@ -439,6 +439,9 @@ fun_parse_news_xml (const char *filename)
 	int ret;
 	gchar *path = NULL;
 
+	/* Initialize the XML library */
+
+	LIBXML_TEST_VERSION
 	reader = xmlReaderForFile (filename, NULL, 0);
 	if (reader != NULL)
 	{
@@ -474,6 +477,9 @@ fun_parse_news_xml (const char *filename)
 			templist = g_list_next (templist);
 		}
 	}
+	
+	/* release xml library */
+	xmlCleanupParser ();
 	
 	return;
 }
@@ -550,8 +556,6 @@ fun_fetch_news_xml (void)
 void
 fun_news_backend_init (void)
 {
-	LIBXML_TEST_VERSION
-
 	/* populate the existing list of news items
 	 * stored on disk */
 	fun_populate_existing_news_list ();
