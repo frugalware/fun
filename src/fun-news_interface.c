@@ -196,9 +196,12 @@ fun_news_check_func (void)
 	{
 		/* re-populate the existing list */
 		fun_populate_existing_news_list ();
-		/* display a notification */
-		fun_tooltip_set_text (_("Latest News"), lastitem->title);
-		fun_tooltip_show (icon);
+		/* display a notification if news notification is enabled*/
+		if (!strcmp(fun_config_get_value_string("news_enabled"),"true"))
+		{
+			fun_tooltip_set_text (_("Latest News"), lastitem->title);
+			fun_tooltip_show (icon);
+		}
 		fun_news_interface_populate_newslist ();
 	}
 	return TRUE;
@@ -236,7 +239,6 @@ cb_fun_news_visit_link_clicked (GtkButton *button, gpointer data)
 		command = g_strdup_printf ("%s %s",
 					fun_config_get_browser_path(fun_config_get_value_string("news_browser")),
 					fun_news_get_url_for_id (id));
-		g_print ("%s\n", command);
 		system (command);
 		g_free (command);
 	}
