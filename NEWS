@@ -1,5 +1,7 @@
 VERSION					DESCRIPTION
 ---------------------------------------------------------------------------------------------------------
+0.3.0 (2008-04-xx)		- FUN now supports News notifications.
+				  Greatly reduced FUN's startup time.
 0.2.2 (2008-03-23)		- BUGFIX (#2883): FUN always checks for updates in the -current repo even on
 				  -stable systems. NOTE: This affects only -stable users.
 0.2.1 (2008-03-02)		- Translation updates
