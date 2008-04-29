@@ -1,6 +1,6 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=Frugalware Update Notifier (FUN)
+Name=Frugalware Update Notifier
 Comment=Frugalware Update Notifier
 Exec=fun
 Terminal=false
