@@ -268,13 +268,13 @@ fun_save_news_to_file (NewsItem *item)
 	
 	if (fun_add_entry_to_newslist(item->id)!=0)
 	{
-		g_print ("couldn't add to new list\n");
+		//g_print ("couldn't add to new list\n");
 		return -1;
 	}
 	fp = fopen (path, "w");
 	if (fp == NULL)
 	{
-		g_print ("Error opening news file\n");
+		//g_print ("Error opening news file\n");
 		return -1;
 	}
 	//printf ("saving news with id: %d\n", item->id);
@@ -514,7 +514,7 @@ fun_news_rss_fetch_thread (void *ptr)
 	gchar		*path = NULL;
 	gchar		*dir = NULL;
 
-	g_print ("i entered fun_news_rss_fetch_thread()\n");
+	//g_print ("i entered fun_news_rss_fetch_thread()\n");
 	curl = curl_easy_init ();
 	if (curl)
 	{
