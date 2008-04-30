@@ -177,7 +177,10 @@ fun_populate_existing_news_list (void)
 	
 	path = cfg_get_path_to_config_file (NEWS_ITEM_LIST);
 	if (!(fp=fopen(path,"r")))
+	{
+		//printf ("fun_populate_existing_news_list: couldn't open news item list \n");
 		return;
+	}
 	g_free (path);
 	while (fgets(line,PATH_MAX,fp))
 	{
@@ -225,10 +228,10 @@ fun_add_entry_to_newslist (gint id)
 			/* this needs to be changed after news items exceed 99 */
 			line[2] = 0;
 			temp = atoi (line);
-			printf ("%d checking \n", temp);
+			//	printf ("%d checking \n", temp);
 			if (temp == id)
 			{
-				printf ("%d is already present\n", id);
+				// printf ("%d is already present\n", id);
 				return -1;
 			}
 		}
@@ -274,7 +277,7 @@ fun_save_news_to_file (NewsItem *item)
 		g_print ("Error opening news file\n");
 		return -1;
 	}
-	printf ("saving news with id: %d\n", item->id);
+	//printf ("saving news with id: %d\n", item->id);
 	fprintf (fp, "%s\n", item->title);
 	fprintf (fp, "%s\n", item->date);
 	fprintf (fp, "%s\n", item->description);
@@ -327,6 +330,7 @@ processNode (xmlTextReaderPtr *reader)
 	int		i;
 	NewsItem	*newsitem = NULL;
     
+    	//printf ("i entered processNode()\n");
 	name = xmlTextReaderConstName ((*reader));
 	if (name == NULL)
 		name = BAD_CAST "--";
@@ -422,6 +426,8 @@ processNode (xmlTextReaderPtr *reader)
 		for (i=0;i<2;i++) xmlTextReaderRead ((*reader));
 		news_item_list = g_list_append (news_item_list, (gpointer)newsitem);
 	}
+	
+	//printf ("i exited processNode()\n");
 
 	return;
 }
@@ -439,6 +445,7 @@ fun_parse_news_xml (const char *filename)
 	int ret;
 	gchar *path = NULL;
 
+	//printf ("i entered fun_parse_news_xml()");
 	/* Initialize the XML library */
 
 	LIBXML_TEST_VERSION
@@ -480,6 +487,7 @@ fun_parse_news_xml (const char *filename)
 	
 	/* release xml library */
 	xmlCleanupParser ();
+	//printf ("i exited fun_parse_news_xml()");
 	
 	return;
 }
@@ -506,6 +514,7 @@ fun_news_rss_fetch_thread (void *ptr)
 	gchar		*path = NULL;
 	gchar		*dir = NULL;
 
+	g_print ("i entered fun_news_rss_fetch_thread()\n");
 	curl = curl_easy_init ();
 	if (curl)
 	{
@@ -513,6 +522,8 @@ fun_news_rss_fetch_thread (void *ptr)
 		dir = g_build_path (G_DIR_SEPARATOR_S, g_get_home_dir(), NEWS_ITEM_DIR, NULL);
 		g_mkdir_with_parents (dir, 0755);
 		g_free (dir);
+		if (g_file_test(path,G_FILE_TEST_EXISTS))
+			g_remove (path);
 		outfile = fopen (path, "w");
 
 		curl_easy_setopt (curl, CURLOPT_URL, url);
