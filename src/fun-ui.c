@@ -95,10 +95,12 @@ static gboolean fun_timeout_conn (void);
 
 static void fun_config_dialog_show (void);
 static void fun_restart (void);
+static void fun_main_window_hide (void);
 static GdkPixbuf * fun_get_icon (const char *icon, int size);
 static void fun_update_status (const char *message);
 
 static gboolean	cb_fun_systray_icon_clicked (GtkStatusIcon *widget, guint button, guint activate_time, gpointer data);
+static gboolean cb_fun_main_window_delete_event (GtkWidget *widget, GdkEvent *event, gpointer data);
 static void cb_fun_systray_icon_activated (GtkStatusIcon *widget, gpointer data);
 static void cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data);
 
@@ -174,6 +176,12 @@ cb_fun_systray_icon_clicked (GtkStatusIcon *widget, guint button, guint activate
 
 		return;
 	}
+}
+
+static gboolean
+cb_fun_main_window_delete_event (GtkWidget *widget, GdkEvent *event, gpointer data)
+{
+	fun_main_window_hide ();
 }
 
 static void
@@ -464,6 +472,10 @@ fun_main_window_init (void)
 	g_signal_connect (G_OBJECT(glade_xml_get_widget(xml,"launch_button")),
 						"clicked",
 						G_CALLBACK(fun_launch_gfpm),
+						NULL);
+	g_signal_connect (G_OBJECT(fun_main_window),
+						"delete-event",
+						G_CALLBACK(cb_fun_main_window_delete_event),
 						NULL);
 					
 	return;
