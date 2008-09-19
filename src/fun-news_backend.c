@@ -18,10 +18,10 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <libxml/xmlreader.h>
 #include <curl/curl.h>
 #include <curl/types.h>
 #include <curl/easy.h>
+#include <nxml.h>
 #include "fun-news_backend.h"
 #include "wejpconfig.h"
 
@@ -314,184 +314,6 @@ fun_get_news_id_from_url (const char *url)
 	return (atoi(ptr));
 }
 
-/**
- * processNode:
- * @reader: the xmlReader
- *
- * Dump information about the current node
- * Parts of this code are based on reader1.c by Daniel Veillard
- */
-static void
-processNode (xmlTextReaderPtr *reader)
-{
-	const		xmlChar *name, *value;
-	char		*temp = NULL;
-	static int	found = 0;
-	int		i;
-	NewsItem	*newsitem = NULL;
-    
-    	//printf ("i entered processNode()\n");
-	name = xmlTextReaderConstName ((*reader));
-	if (name == NULL)
-		name = BAD_CAST "--";
-	if (!found)
-	{
-		if (!strcmp(name,"item"))
-		{
-			found = 1;
-			return;
-		}
-	}
-	else
-	{
-		newsitem = (NewsItem*) malloc (sizeof(NewsItem));
-		memset (newsitem, 0, sizeof(NewsItem));
-		
-		/* Process TITLE */
-		for (i=0;i<2;i++) xmlTextReaderRead ((*reader));
-		value = xmlTextReaderConstValue((*reader));
-
-		if (value == NULL)
-			return;
-		else
-		{
-			temp = g_strdup (value);
-   		 	g_strstrip (temp);
-			if (strlen(temp)>5)
-			{
-				sprintf (newsitem->title, temp);
-				//printf ("Title: %s\n", temp);
-				g_free (temp);
-			}
-		}
-		
-		/* Process URL */
-		for (i=0;i<4;i++) xmlTextReaderRead ((*reader));
-		value = xmlTextReaderConstValue((*reader));
-
-		if (value == NULL)
-			return;
-		else
-		{
-			temp = g_strdup (value);
-   		 	g_strstrip (temp);
-			if (strlen(temp)>5)
-			{
-				newsitem->id = fun_get_news_id_from_url (temp);
-				//printf ("ID: %d\n", newsitem->id);
-				g_free (temp);
-			}
-		}
-		
-		/* Skip GUID */
-		for (i=0;i<4;i++) xmlTextReaderRead ((*reader));
-		
-		/* Process Description */
-		for (i=0;i<4;i++) xmlTextReaderRead ((*reader));
-		value = xmlTextReaderConstValue((*reader));
-
-		if (value == NULL)
-			return;
-		else
-		{
-			temp = g_strdup (value);
-   		 	g_strstrip (temp);
-			if (strlen(temp)>5)
-			{
-				newsitem->description = temp;
-				//printf ("Description: %.40s...\n\n\n", temp);
-			}
-		}
-		
-		/* Skip content:encoded description, pubdate etc */
-		for (i=0;i<4;i++) xmlTextReaderRead ((*reader));
-		
-		/* Process PubDate */
-		for (i=0;i<4;i++) xmlTextReaderRead ((*reader));
-		value = xmlTextReaderConstValue((*reader));
-
-		if (value == NULL)
-			return;
-		else
-		{
-			temp = g_strdup (value);
-   		 	g_strstrip (temp);
-			if (strlen(temp)>5)
-			{
-				strncpy (newsitem->date, temp, strlen(temp));
-				//printf ("Date: %.s\n\n\n", temp);
-			}
-		}
-		
-		for (i=0;i<2;i++) xmlTextReaderRead ((*reader));
-		news_item_list = g_list_append (news_item_list, (gpointer)newsitem);
-	}
-	
-	//printf ("i exited processNode()\n");
-
-	return;
-}
-
-/**
- * fun_parse_news_xml:
- * @filename: the file name to parse
- *
- * Parse and print information about an XML file.
- */
-static void
-fun_parse_news_xml (const char *filename)
-{
-	xmlTextReaderPtr reader;
-	int ret;
-	gchar *path = NULL;
-
-	//printf ("i entered fun_parse_news_xml()");
-	/* Initialize the XML library */
-
-	LIBXML_TEST_VERSION
-	reader = xmlReaderForFile (filename, NULL, 0);
-	if (reader != NULL)
-	{
-        	ret = xmlTextReaderRead (reader);
-		while (ret == 1)
-		{
-			processNode (&reader);
-			ret = xmlTextReaderRead (reader);
-		}
-		xmlFreeTextReader (reader);
-		/*
-		if (ret != 0)
-		{
-			fprintf (stderr, "%s : failed to parse\n", filename);
-			return;
-		}
-		*/
-	}
-	else
-	{
-		fprintf (stderr, "Unable to open %s\n", filename);
-		return;
-	}
-	news_item_list = g_list_reverse (news_item_list);
-	path = cfg_get_path_to_config_file (NEWS_ITEM_LIST);
-	if (g_file_test(path,G_FILE_TEST_EXISTS)==FALSE)
-	{
-		GList *templist = NULL;
-		templist = news_item_list;
-		while (templist!=NULL)
-		{
-			fun_save_news_to_file ((NewsItem*)templist->data);
-			templist = g_list_next (templist);
-		}
-	}
-	
-	/* release xml library */
-	xmlCleanupParser ();
-	//printf ("i exited fun_parse_news_xml()");
-	
-	return;
-}
-
 static size_t
 fun_news_write_func (void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
@@ -504,58 +326,74 @@ fun_news_read_func (void *ptr, size_t size, size_t nmemb, FILE *stream)
 	return fread (ptr, size, nmemb, stream);
 }
 
-static void*
-fun_news_rss_fetch_thread (void *ptr)
-{
-	CURL		*curl;
-	CURLcode	res;
-	FILE		*outfile;
-	gchar		*url = ptr;
-	gchar		*path = NULL;
-	gchar		*dir = NULL;
-
-	//g_print ("i entered fun_news_rss_fetch_thread()\n");
-	curl = curl_easy_init ();
-	if (curl)
-	{
-		path = cfg_get_path_to_config_file (NEWS_XML);
-		dir = g_build_path (G_DIR_SEPARATOR_S, g_get_home_dir(), NEWS_ITEM_DIR, NULL);
-		g_mkdir_with_parents (dir, 0755);
-		g_free (dir);
-		if (g_file_test(path,G_FILE_TEST_EXISTS))
-			g_remove (path);
-		outfile = fopen (path, "w");
-
-		curl_easy_setopt (curl, CURLOPT_URL, url);
-		curl_easy_setopt (curl, CURLOPT_WRITEDATA, outfile);
-		curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, fun_news_write_func);
-		curl_easy_setopt (curl, CURLOPT_READFUNCTION, fun_news_read_func);
-
-		res = curl_easy_perform (curl);
-		if (res != 0)
-		{
-			fetched = FALSE;
-		}
-		else
-		{
-			fetched = TRUE;
-			fun_parse_news_xml (path);
-		}
-		fclose (outfile);
-		curl_easy_cleanup (curl);
-		g_free (path);
-	}
-
-	return NULL;
-}
-
 void
 fun_fetch_news_xml (void)
 {
-	/* create the news fetcher thread */
-	if (!g_thread_create(&fun_news_rss_fetch_thread, NEWS_URL, FALSE, NULL) != 0)
-    		g_warning ("Failed to create FUN news fetcher thread");
-    		
+	gchar *path = NULL;
+	nxml_t *nxml = NULL;
+	nxml_data_t *nroot = NULL;
+	nxml_data_t *ndata = NULL;
+	nxml_data_t *nndata = NULL;
+	char *str = NULL;
+	nxml_error_t e;
+
+	e = nxml_new (&nxml);
+	nxml_parse_url (nxml, NEWS_URL);
+	nxml_root_element (nxml, &nroot);
+	nxml_find_element (nxml, nroot, "channel", &ndata);
+	nxml_find_element (nxml, ndata, "item", &nndata);
+	while (nndata)
+	{
+		nxml_data_t *child = NULL;
+		nxml_data_t *d = NULL;
+		child = nndata;
+
+		NewsItem *newsitem = (NewsItem*) malloc (sizeof(NewsItem));
+		memset (newsitem, 0, sizeof(NewsItem));
+		
+		/* title */
+		nxml_find_element (nxml, child, "title", &d);
+		nxml_get_string (d, &str);
+		sprintf (newsitem->title, str);
+		free (str);
+		
+		/* link */
+		nxml_find_element (nxml, child, "link", &d);
+		nxml_get_string (d, &str);
+		newsitem->id = fun_get_news_id_from_url (str);
+		free (str);
+		
+		/* description */
+		nxml_find_element (nxml, child, "description", &d);
+		nxml_get_string (d, &str);
+		newsitem->description = g_strdup (str);
+		free (str);
+		
+		/* pubdate */
+		nxml_find_element (nxml, child, "pubDate", &d);
+		nxml_get_string (d, &str);
+		strncpy (newsitem->date, str, strlen(str));
+		free (str);
+
+		news_item_list = g_list_append (news_item_list, (gpointer)newsitem);
+		nndata = nndata->next;
+		
+	}
+	nxml_free (nxml);
+	
+	news_item_list = g_list_reverse (news_item_list);
+	path = cfg_get_path_to_config_file (NEWS_ITEM_LIST);
+	if (g_file_test(path,G_FILE_TEST_EXISTS)==FALSE)
+	{
+		GList *templist = NULL;
+		templist = news_item_list;
+		while (templist!=NULL)
+		{
+			fun_save_news_to_file ((NewsItem*)templist->data);
+			templist = g_list_next (templist);
+		}
+	}
+
     	return;
 }
 
