@@ -49,6 +49,9 @@ fun_glade_init (void)
 int
 main (int argc, char **argv)
 {
+	/* initialize gthread */
+	g_thread_init (NULL);
+	
 	/* set the locale */
 	setlocale (LC_ALL, "");
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);

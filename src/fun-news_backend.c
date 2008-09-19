@@ -337,6 +337,9 @@ fun_fetch_news_xml (void)
 	char *str = NULL;
 	nxml_error_t e;
 
+	/* free the old news list */
+	g_list_free (news_item_list);
+
 	e = nxml_new (&nxml);
 	nxml_parse_url (nxml, NEWS_URL);
 	nxml_root_element (nxml, &nroot);
