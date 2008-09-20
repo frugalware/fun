@@ -29,7 +29,7 @@ Requirements
 * libglade-2.0 >= 2.6
 * libnotify >= 0.4.4
 * libcurl
-* libxml-2.0
+* libnxml
 
 Using FUN
 =========

@@ -1,5 +1,9 @@
 VERSION					DESCRIPTION
 ---------------------------------------------------------------------------------------------------------
+0.3.1 (2008-09-20)		- Dropped the old method of rss fetching using libxml+curl
+				- Fun now makes use of libnxml for news notifier
+				- BUGFIX (#3102): FUN crashes after a while
+				- Minimize the main window to system tray on delete event
 0.3.0 (2008-04-30)		- FUN now supports News notifications.
 				  Greatly reduced FUN's startup time.
 0.2.2 (2008-03-23)		- BUGFIX (#2883): FUN always checks for updates in the -current repo even on
