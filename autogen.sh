@@ -40,7 +40,7 @@ fi
 
 if [ "$1" == "--dist" ]; then
 	ver=`grep AC_INIT configure.ac|sed 's/.*, \([0-9\.]*\), .*/\1/'`
-	git-archive --format=tar --prefix=fun-$ver/ HEAD | tar xf -
+	git archive --format=tar --prefix=fun-$ver/ HEAD | tar xf -
 	git log --no-merges |git name-rev --tags --stdin > fun-$ver/ChangeLog
 	cd fun-$ver
 	./autogen.sh --git
