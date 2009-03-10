@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <glib.h>
 #include <dbus/dbus-glib-bindings.h>
 #include <dirent.h>

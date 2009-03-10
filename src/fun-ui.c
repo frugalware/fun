@@ -484,7 +484,6 @@ fun_main_window_init (void)
 void*
 fun_init_thread (void *ptr)
 {
-	GError		*error = NULL;
 	gulong		seconds = 0;
 	gchar		*plist = NULL;
 	static gchar	*error_msg = ("Update checking has been disabled because FUN has detected "

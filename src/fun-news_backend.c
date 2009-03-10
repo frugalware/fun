@@ -135,8 +135,7 @@ fun_get_news_item_from_file (const char *file)
 	NewsItem *ni = NULL;
 	char line[PATH_MAX+1] = "";
 	GList *dsclist = NULL;
-	gboolean found = FALSE;
-	
+
 	if (!(fp=fopen(file,"r")))
 		return NULL;
 	ni = (NewsItem*) malloc (sizeof(NewsItem));
