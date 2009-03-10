@@ -26,6 +26,8 @@
 #endif
 
 #include "fun.h"
+#include "fun-ui.h"
+#include "fun-dbus.h"
 #include "fun-config.h"
 #include "fun-news_backend.h"
 #include "fun-messages.h"

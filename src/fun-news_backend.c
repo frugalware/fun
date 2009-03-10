@@ -18,6 +18,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <limits.h>
 #include <curl/curl.h>
 #include <curl/types.h>
 #include <curl/easy.h>
@@ -36,8 +37,6 @@ static GList	*news_item_list = NULL;
 /* populated on startup and updated regularly */
 /* existing news item list */
 static GList	*e_news_item_list = NULL;
-
-static gboolean fetched = FALSE;
 
 /**
  *
@@ -311,18 +310,6 @@ fun_get_news_id_from_url (const char *url)
 	ptr = g_strreverse (ptr);
 
 	return (atoi(ptr));
-}
-
-static size_t
-fun_news_write_func (void *ptr, size_t size, size_t nmemb, FILE *stream)
-{
-	return fwrite (ptr, size, nmemb, stream);
-}
-
-static size_t
-fun_news_read_func (void *ptr, size_t size, size_t nmemb, FILE *stream)
-{
-	return fread (ptr, size, nmemb, stream);
 }
 
 void

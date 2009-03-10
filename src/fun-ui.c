@@ -481,8 +481,8 @@ fun_main_window_init (void)
 	return;
 }
 
-void*
-fun_init_thread (void *ptr)
+static void
+fun_init_thread (void)
 {
 	gulong		seconds = 0;
 	gchar		*plist = NULL;
@@ -528,7 +528,7 @@ fun_ui_init (void)
 	fun_config_dialog_init ();
 	fun_news_interface_init ();
 	
-	if (!g_thread_create(&fun_init_thread, NULL, FALSE, NULL) != 0)
+	if (!g_thread_create((GThreadFunc)&fun_init_thread, NULL, FALSE, NULL) != 0)
     		g_warning ("Failed to create FUN init thread");
 
 	return;

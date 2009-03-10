@@ -16,7 +16,7 @@ typedef struct _newsitem {
 
 void fun_news_backend_init (void);
 
-void populate_existing_news_list (void);
+void fun_populate_existing_news_list (void);
 
 GList* fun_get_existing_news_list (void);
 
@@ -28,7 +28,7 @@ int fun_save_news_to_file (NewsItem *item);
 
 GList* fun_compare_lists (GList *oldlist, GList *newlist);
 
-char* fun_get_news_url_for_id (guint id);
+char* fun_news_get_url_for_id (guint id);
 
 #endif
 
