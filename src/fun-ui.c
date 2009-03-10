@@ -24,6 +24,7 @@
 #include "fun-messages.h"
 #include "fun-tooltip.h"
 #include "fun-dbus.h"
+#include "fun-news_interface.h"
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -99,7 +100,7 @@ static void fun_main_window_hide (void);
 static GdkPixbuf * fun_get_icon (const char *icon, int size);
 static void fun_update_status (const char *message);
 
-static gboolean	cb_fun_systray_icon_clicked (GtkStatusIcon *widget, guint button, guint activate_time, gpointer data);
+static void	cb_fun_systray_icon_clicked (GtkStatusIcon *widget, guint button, guint activate_time, gpointer data);
 static gboolean cb_fun_main_window_delete_event (GtkWidget *widget, GdkEvent *event, gpointer data);
 static void cb_fun_systray_icon_activated (GtkStatusIcon *widget, gpointer data);
 static void cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data);
@@ -128,7 +129,7 @@ cb_fun_systray_icon_activated (GtkStatusIcon *widget, gpointer data)
 	return;
 }
 
-static gboolean
+static void
 cb_fun_systray_icon_clicked (GtkStatusIcon *widget, guint button, guint activate_time, gpointer data)
 {
 	/* Right Click */
@@ -182,6 +183,7 @@ static gboolean
 cb_fun_main_window_delete_event (GtkWidget *widget, GdkEvent *event, gpointer data)
 {
 	fun_main_window_hide ();
+	return TRUE;
 }
 
 static void
@@ -358,7 +360,7 @@ fun_config_dialog_show (void)
 			gtk_list_store_set (store, &iter, 0, browsers->data, -1);
 			browsers = g_list_next (browsers);
 		}
-		gtk_combo_box_set_model (GTK_COMBO_BOX(fun_config_browser_list_combo), store);
+		gtk_combo_box_set_model (GTK_COMBO_BOX(fun_config_browser_list_combo), GTK_TREE_MODEL(store));
 		gtk_combo_box_set_active (GTK_COMBO_BOX(fun_config_browser_list_combo), i);
 		g_list_free (browsers);
 	}
