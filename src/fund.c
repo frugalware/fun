@@ -200,9 +200,11 @@ gboolean fund_update_database(FWUpdateNotifier *obj, gchar **packages, GError **
 	}
 	else {
 		GString *tmp = g_string_new ("");
-		for (list; list!=NULL;list=g_list_next(list)) {
+		while (list!=NULL)
+		{
 			tmp = g_string_append (tmp, list->data);
 			tmp = g_string_append (tmp, " ");
+			list = g_list_next (list);
 		}
 		if (packages != NULL)
 			*packages = g_strdup (tmp->str);
