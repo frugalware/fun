@@ -729,9 +729,13 @@ fun_launch_gfpm (void)
 {
 	gchar *cmdline = NULL;
 	gchar *su = fun_config_get_value_string ("gfpm_launcher");
+	GError *error = NULL;
 	
 	cmdline = g_strdup_printf ("%s gfpm", su);
-	system (cmdline);
+	if (!gdk_spawn_command_line_on_screen (gdk_screen_get_default(),cmdline,NULL))
+	{
+		fun_error (_("Error launching GFpm"), error->message);
+	}
 	g_free (cmdline);
 	
 	return;
