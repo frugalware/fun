@@ -45,12 +45,14 @@ GList*
 fun_config_get_available_browsers (void)
 {
 	guint	i = 0;
+	guint   j = 0;
 	GList	*ret = NULL;
 	
 	while (browserlist[i] != NULL)
 	{
-		if (g_file_test(browserlist[++i],G_FILE_TEST_EXISTS))
-			ret = g_list_append (ret, g_strdup(browserlist[--i]));
+		j = i+1;
+		if (g_file_test(browserlist[j],G_FILE_TEST_EXISTS))
+			ret = g_list_append (ret, g_strdup(browserlist[i]));
 		i+=2;
 	}
 	
