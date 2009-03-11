@@ -38,6 +38,29 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+dnl Build with strict
+AC_ARG_ENABLE(strict,
+	AC_HELP_STRING([ --enable-strict],  [Enable building with 'Strict' flags]),
+	[strict=$enableval], [strict=no])
+
+dnl Enable or disable building with 'strict' flags
+AC_MSG_CHECKING(for building with 'strict' flags)
+if test x$strict = xyes ; then
+	CFLAGS="$CFLAGS -Wextra -Wall -pedantic -Wshadow \
+	    -Wmissing-declarations -Wpointer-arith -Wcast-align \
+	    -Wfloat-equal -Wstrict-prototypes -Wmissing-prototypes \
+	    -Wredundant-decls -Wunused-variable -Wunused-parameter \
+	    -Wparentheses -Wno-long-long -Wwrite-strings -Wimplicit \
+	    -Wnested-externs -Wno-unused -Wundef -Wpacked \
+	    -Wbad-function-cast -Wunused-function -Wunused-label \
+	    -Wunused-value -Wfloat-equal -Wchar-subscripts -Wswitch \
+	    -Wmissing-braces -Wsequence-point -Wunknown-pragmas \
+	    -Wdeclaration-after-statement -Wsign-compare"
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+
 dnl Check if debug is enabled
 AC_MSG_CHECKING(for debug support)
 if test "x$debug" = "xyes" ; then
@@ -73,7 +96,7 @@ fi
 
 AC_SUBST(DBUS_SYS_DIR)
 
-CFLAGS="${CFLAGS}"
+CFLAGS="${CFLAGS} -std=c99"
 
 dnl ==========================================================================
 
@@ -99,4 +122,6 @@ FUN $VERSION configuration summary:
         compiler flags           : ${CFLAGS}
         debug support            : ${debug}
         werror support           : ${werror}
+	strict flags             : ${strict}
+
 "
