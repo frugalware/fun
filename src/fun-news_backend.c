@@ -173,7 +173,7 @@ fun_populate_existing_news_list (void)
 	char *path = NULL;
 	char *npath = NULL;
 	
-	path = cfg_get_path_to_config_file (NEWS_ITEM_LIST);
+	path = cfg_get_path_to_config_file ((char*)NEWS_ITEM_LIST);
 	if (!(fp=fopen(path,"r")))
 	{
 		//printf ("fun_populate_existing_news_list: couldn't open news item list \n");
@@ -216,7 +216,7 @@ fun_add_entry_to_newslist (gint id)
 	char line[PATH_MAX+1];
 	int temp;
 	
-	path = cfg_get_path_to_config_file (NEWS_ITEM_LIST);
+	path = cfg_get_path_to_config_file ((char*)NEWS_ITEM_LIST);
 	fp = fopen (path, "r");
 	if (fp != NULL)
 	{
@@ -335,9 +335,10 @@ fun_fetch_news_xml (void)
 	{
 		nxml_data_t *child = NULL;
 		nxml_data_t *d = NULL;
+		NewsItem *newsitem = NULL;
 		child = nndata;
-
-		NewsItem *newsitem = (NewsItem*) malloc (sizeof(NewsItem));
+		
+		newsitem = (NewsItem*) malloc (sizeof(NewsItem));
 		memset (newsitem, 0, sizeof(NewsItem));
 		
 		/* title */

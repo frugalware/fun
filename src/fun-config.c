@@ -150,7 +150,7 @@ void
 fun_config_set_value_string (const char *key, char *value)
 {
 	char *val = g_strdup_printf (value);
-	cfg_add_key (&conf, key, value);
+	cfg_add_key (&conf, (char*) key, value);
 	g_free (val);
 
 	return;
@@ -160,7 +160,7 @@ void
 fun_config_set_value_int (const char *key, int value)
 {
 	char *val = g_strdup_printf ("%d", value);
-	cfg_add_key (&conf, key, val);
+	cfg_add_key (&conf, (char*) key, val);
 	g_free (val);
 	
 	return;

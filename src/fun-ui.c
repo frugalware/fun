@@ -49,9 +49,9 @@ static GdkPixbuf		*fun_about_pixbuf = NULL;
 static GtkWidget		*fun_config_dlg = NULL;
 static GtkWidget		*fun_config_gfpm_launcher_combo = NULL;
 static GtkWidget		*fun_config_browser_list_combo = NULL;
-static GtkAdjustment 		*fun_config_upd_int_adj = NULL;
-static GtkAdjustment 		*fun_config_news_int_adj = NULL;
-static GtkAdjustment		*fun_config_not_tim_adj = NULL;
+static GtkAdjustment 	*fun_config_upd_int_adj = NULL;
+static GtkAdjustment 	*fun_config_news_int_adj = NULL;
+static GtkAdjustment	*fun_config_not_tim_adj = NULL;
 static GtkWidget		*fun_config_news_chkbtn = NULL;
 static gboolean			connected = FALSE;
 

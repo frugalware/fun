@@ -1,7 +1,7 @@
 /*
  *  fund.c for fun
  *
- *  Copyright (C) 2007 by Priyank Gosalia <priyankmg@gmail.com>
+ *  Copyright (C) 2007-2009 by Priyank Gosalia <priyankmg@gmail.com>
  *  Portions of this code are borrowed from netconfigd
  *  netconfigd is Copyright (C) 2007 by Alex Smith <alex@alex-smith.me.uk>
  *
@@ -130,10 +130,10 @@ _updatenotifierd_init_pacman () {
 	/* register the main repo */
 	/* FIXME: Later add support for custom repos */
 	if (fw_repo == FW_REPO_CURRENT)
-		sync_db = pacman_db_register (FW_CURRENT);
+		sync_db = pacman_db_register ((char*)FW_CURRENT);
 	else
-		sync_db = pacman_db_register (FW_STABLE);
-	local_db = pacman_db_register ("local");
+		sync_db = pacman_db_register ((char*)FW_STABLE);
+	local_db = pacman_db_register ((char*)"local");
 
 	if (sync_db == NULL)
 		return FALSE;
@@ -227,7 +227,7 @@ gboolean fund_test_service(FWUpdateNotifier *obj, gint *ret, GError **error) {
 	return TRUE;	
 }
 
-void usage() {
+void usage (void) {
 	printf("fund (Frugalware Update Notifier Daemon) v" VERSION "\n");
 	printf(" --help        Display this help text\n");
 	printf(" --daemon      Fork into the background\n");
