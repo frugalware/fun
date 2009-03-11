@@ -96,7 +96,6 @@ static gboolean fun_timeout_conn (void);
 
 static void fun_config_dialog_show (void);
 static void fun_restart (void);
-static void fun_main_window_hide (void);
 static GdkPixbuf * fun_get_icon (const char *icon, int size);
 static void fun_update_status (const char *message);
 
