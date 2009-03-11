@@ -638,7 +638,7 @@ fun_populate_updates_tvw (gchar *plist)
 	GtkListStore		*store = NULL;
 	GtkTreeIter		iter;
 	GList			*l = NULL;
-	GdkPixbuf		*icon = NULL;
+	GdkPixbuf		*icon2 = NULL;
 
 	/* convert the updates string to a GList */
 	GList	*pack_list = NULL;
@@ -647,7 +647,7 @@ fun_populate_updates_tvw (gchar *plist)
 	while ((pkg=strtok(NULL, " "))!=NULL) pack_list = g_list_append (pack_list, (gpointer)g_strdup(pkg));
 	
 	/* populate the updates treeview store */
-	icon = fun_get_icon ("fun", 16);
+	icon2 = fun_get_icon ("fun", 16);
 	store = GTK_LIST_STORE (gtk_tree_view_get_model (GTK_TREE_VIEW(fun_updates_tvw)));
 	for (l = g_list_first (pack_list); l; l = g_list_next (l))
 	{
@@ -656,7 +656,7 @@ fun_populate_updates_tvw (gchar *plist)
 		if (fun_dbus_perform_service (GET_PACKAGE_INFO, l->data, &ver, &desc))
 		{
 			gtk_list_store_append (store, &iter);
-			gtk_list_store_set (store, &iter, 0, icon, 1, l->data, 2, ver, 3, desc, -1);
+			gtk_list_store_set (store, &iter, 0, icon2, 1, l->data, 2, ver, 3, desc, -1);
 		}
 		else
 		{
@@ -698,14 +698,14 @@ fun_main_window_show (void)
 }
 
 static GdkPixbuf *
-fun_get_icon (const char *icon, int size)
+fun_get_icon (const char *icon3, int size)
 {
 	GtkIconTheme	*icon_theme = NULL;
 	GdkPixbuf	*ret = NULL;
 	GError		*error = NULL;
 	
 	icon_theme = gtk_icon_theme_get_default ();
-	ret = gtk_icon_theme_load_icon (icon_theme, icon, size, 0, &error);
+	ret = gtk_icon_theme_load_icon (icon_theme, icon3, size, 0, &error);
 
 	return ret;
 }
