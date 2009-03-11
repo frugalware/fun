@@ -49,7 +49,7 @@ static PM_DB *sync_db = NULL;
 static PM_DB *local_db = NULL;
 static GList *dblist = NULL;
 
-G_DEFINE_TYPE(FWUpdateNotifier, fund, G_TYPE_OBJECT);
+G_DEFINE_TYPE(FWUpdateNotifier, fund, G_TYPE_OBJECT)
 
 void fund_class_init(FWUpdateNotifierClass *class) {
 	// Nothing here
