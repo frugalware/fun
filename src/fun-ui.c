@@ -72,7 +72,8 @@ static const gchar translators[] = \
 				"Carl Andersen <carl@frugalware.dk> (da_DK)\n"
 				"Manuel Peral <mcklaren@gmail.com> (es_ES)\n"	
 				"Michel Hermier <michel.hermier@gmail.com> (fr_FR)\n"
-				"Miklos Vajna <vmiklos@frugalware.org> (hu_HU)\n";
+				"Miklos Vajna <vmiklos@frugalware.org> (hu_HU)\n"
+				"Clytie Siddall <clytie@riverland.net.au> (vi_VI)\n";
 				
 static gchar *license =
 ("This program is free software; you can redistribute it and/or "
