@@ -1,5 +1,9 @@
 VERSION					DESCRIPTION
 ---------------------------------------------------------------------------------------------------------
+0.3.2 (2009-03-12)		- BUGFIX (#3653): FUN becomes unresponsive on launching GFpm
+				- BUGFIX: FUN shows no browser(s) if Firefox was not installed
+				- Other minor fixes (see ChangeLog)
+				- New translation: (Vietnamese) vi_VI
 0.3.1 (2008-09-20)		- Dropped the old method of rss fetching using libxml+curl
 				- Fun now makes use of libnxml for news notifier
 				- BUGFIX (#3102): FUN crashes after a while
