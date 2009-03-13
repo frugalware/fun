@@ -397,6 +397,12 @@ fun_config_dialog_init (void)
 					G_CALLBACK(cb_fun_config_dlg_close_clicked),
 					(gpointer)glade_xml_get_widget(xml,"interval_spbtn"));
 	
+	/* don't destroy the dialog on delete-event */
+	g_signal_connect (G_OBJECT(fun_config_dlg),
+					  "delete_event",
+					  G_CALLBACK(gtk_widget_hide),
+					  (gpointer)fun_config_dlg);
+	
 	return;
 }
 
