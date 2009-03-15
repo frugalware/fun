@@ -55,6 +55,9 @@ static GtkAdjustment	*fun_config_not_tim_adj = NULL;
 static GtkWidget		*fun_config_news_chkbtn = NULL;
 static gboolean			connected = FALSE;
 
+/* synchronization lock */
+static GMutex			*mutex = NULL;
+
 /* credits */
 static const gchar *authors[] = { \
 					"Priyank M. Gosalia <priyankmg@gmail.com>",
@@ -92,7 +95,7 @@ static gchar *license =
 "MA  02110-1301  USA");
 
 
-static gboolean fun_timeout_func (void);
+static void fun_timeout_func (void);
 static gboolean fun_timeout_conn (void);
 
 static void fun_config_dialog_show (void);
@@ -284,6 +287,7 @@ cb_fun_config_dlg_close_clicked (GtkWidget *button, gpointer data)
 void
 fun_ui_cleanup (void)
 {
+	g_mutex_free (mutex);
 	if (icon == NULL)
 		return;
 	g_object_unref (icon);
@@ -500,6 +504,9 @@ fun_init_thread (void)
 					"update notifier daemon by running the following command as root: \n\n"
 					"'service fun start'");
 	
+	/* create lock */
+	mutex = g_mutex_new ();
+
 	if (fun_dbus_perform_service (TEST_SERVICE, NULL, NULL, NULL) == FALSE)
 	{
 		fun_error (_("Connection Failed"), _("Failed to connect to the fun daemon\n"));
@@ -564,14 +571,21 @@ fun_timeout_conn (void)
 	return TRUE;
 }
 
+
 static gboolean
-fun_timeout_func (void)
+_fun_timeout_func (void)
 {
 	gchar *plist = NULL;
 
+	/* obtain lock */
+	g_mutex_lock (mutex);
+	
 	/* Don't do anything if we're not connected to the daemon */
 	if (!connected)
 		return TRUE;
+
+	/* get gdk lock before updating the ui */
+	gdk_threads_enter ();
 
 	/* set the status to let the user know that fun is checking for an update */
 	fun_update_status (_("Checking for new updates..."));
@@ -597,7 +611,22 @@ fun_timeout_func (void)
 	/* and the status back to Idle */
 	fun_update_status (_("Idle"));
 
+	/* release gdk locks */
+	gdk_flush ();
+	gdk_threads_leave ();
+
+	/* release lock and return */
+	g_mutex_unlock (mutex);
 	return TRUE;
+}
+
+static void
+fun_timeout_func (void)
+{
+	if (!g_thread_create((GThreadFunc)&_fun_timeout_func, NULL, FALSE, NULL) != 0)
+		g_warning (_("Failed to create thread for checking update"));
+
+	return;
 }
 
 static void
