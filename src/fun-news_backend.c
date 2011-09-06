@@ -20,7 +20,6 @@
 
 #include <sys/param.h>
 #include <curl/curl.h>
-#include <curl/types.h>
 #include <curl/easy.h>
 #include <nxml.h>
 #include "fun-news_backend.h"
