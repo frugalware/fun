@@ -1,5 +1,6 @@
 VERSION					DESCRIPTION
 ---------------------------------------------------------------------------------------------------------
+0.3.3 (2011-09-06)              - Fix compiling with libnotify and curl
 0.3.2 (2009-03-12)		- BUGFIX (#3653): FUN becomes unresponsive on launching GFpm
 				- BUGFIX: FUN shows no browser(s) if Firefox was not installed
 				- Other minor fixes (see ChangeLog)
