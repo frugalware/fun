@@ -35,12 +35,10 @@ void fun_tooltip_new (GtkStatusIcon *icon)
 	notify_init ("fun");
 	tooltip = notify_notification_new ("Frugalware Update Notifier",
 						NULL,
-						"fun",
-						NULL);
+						"fun");
 	notify_notification_set_category (tooltip, "information");
 	notify_notification_set_timeout (tooltip, (fun_config_get_value_int("notification_timeout")*1000));
 	notify_notification_set_urgency (tooltip, NOTIFY_URGENCY_NORMAL);
-	notify_notification_attach_to_status_icon (tooltip, icon);
 	notify_notification_add_action (tooltip, "view_updates", _("View Updates"), (NotifyActionCallback)fun_tooltip_callback, NULL, NULL);
 
 	return;
@@ -69,7 +67,6 @@ void fun_tooltip_show (GtkStatusIcon *icon)
 		GdkRectangle area;
 		
 		gtk_status_icon_get_geometry (icon, &screen, &area, NULL);
-		notify_notification_set_geometry_hints (tooltip, screen, area.x, area.y);
 		notify_notification_show (tooltip, NULL);
 	}
 
