@@ -17,7 +17,7 @@ fun_SOURCES	= wejpconfig.c \
 			  fun-dbus.c \
 			  fun.c
 
-fund_LDADD= @FUND_LIBS@ -lpacman -lfwutil
+fund_LDADD= @FUND_LIBS@ -lpacman
 fun_LDADD= @FUN_LIBS@ @FUND_LIBS@ -lcurl
 
 BUILT_SOURCES = fund-dbus-glue.h

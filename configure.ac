@@ -12,7 +12,7 @@ AM_INIT_AUTOMAKE
 
 AC_PROG_CC
 AC_HEADER_STDC
-AC_CHECK_HEADERS([locale.h stdlib.h string.h sys/ioctl.h unistd.h pacman.h libfwutil.h])
+AC_CHECK_HEADERS([locale.h stdlib.h string.h sys/ioctl.h unistd.h pacman.h])
 ALL_LINGUAS=""
 GETTEXT_PACKAGE=fun
 AC_SUBST(GETTEXT_PACKAGE)
