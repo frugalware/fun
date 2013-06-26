@@ -4,7 +4,7 @@ AC_PREREQ(2.59)
 AC_INIT([fun], 0.3.3, [frugalware-devel@frugalware.org], fun)
 AC_CONFIG_SRCDIR([src/fun.c])
 AC_LANG(C)
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS(config.h)
 AC_CANONICAL_SYSTEM
 AC_PROG_LIBTOOL
 AC_PROG_INTLTOOL([0.21])
